@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema({
         type: String
     },
     
-    SHOP:[
+    SHOP:
         {
             SHOP_NAME: String,
             SHOP_IMAGE: String,
@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema({
                 { type: mongoose.Schema.ObjectId, ref: 'Item' }
             ]
         }
-    ],
+    ,
     ORDERS: [
         {
             ORDER_ID: String,
