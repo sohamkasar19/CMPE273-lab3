@@ -20,7 +20,7 @@ exports.user_signup_post = async (req, res) => {
 };
 
 exports.user_login_post = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body.data;
   User.findOne({EMAIL: email}, (error, user) => {
     if(error) {
       res.json({status: 'error', error: 'Error in mongo connection'});
@@ -32,7 +32,7 @@ exports.user_login_post = async (req, res) => {
           const token = jwt.sign(payload, SECRET, {
             expiresIn: 8*3600
           }, (err, token) => {
-            res.json({status: 'ok', token: token, username: user.NAME})
+            res.json({status: 'ok', token: token, user: user})
           });
         }
       })
