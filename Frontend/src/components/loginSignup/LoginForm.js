@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import SignupForm from "./SignupForm";
 import { userLogin } from "../../service/userService";
+import { useDispatch } from "react-redux";
 
 function LoginForm(props) {
   const [showSignupForm, setShowSignupForm] = useState(false);
-  const [loginFormValue, setLoginFormValue] = React.useState({
+  const [loginFormValue, setLoginFormValue] = useState({
     email: "",
     password: "",
   });
+  const [showAlert, setShowAlert] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleLoginFormChange = (e) => {
     setLoginFormValue({
@@ -26,9 +30,13 @@ function LoginForm(props) {
   };
   const handleLoginFormSubmit = (e) => {
     e.preventDefault();
-    userLogin(loginFormValue).then((res) => {
-      console.log("login then " + JSON.stringify(res));
-    })
+    dispatch(userLogin(loginFormValue)).then((res) => {
+      if (res) {
+        console.log("redirect to home");
+      } else {
+        setShowAlert(true);
+      }
+    });
   };
   return (
     <>
@@ -58,6 +66,15 @@ function LoginForm(props) {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <Alert
+              show={showAlert}
+              variant="danger"
+              onClose={() => setShowAlert(false)}
+              dismissible
+            >
+              <Alert.Heading>Oh snap! Something's wrong!</Alert.Heading>
+              <p>Check your credentials</p>
+            </Alert>
             <Form onSubmit={handleLoginFormSubmit}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
