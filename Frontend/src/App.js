@@ -4,7 +4,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import Signup from "./components/loginSignup/signup";
 // import Login from "./components/loginSignup/login";
-import NavBar from "./components/NavBar/NavBar";
+import NavBar from "./components/navBar/NavBar";
 // import Profile from "./components/Profile/profile";
 // import HomePage from "./components/Home/homePage";
 // import Item from "./components/Item/itemPage";
