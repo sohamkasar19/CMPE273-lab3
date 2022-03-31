@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import SignupForm from "./SignupForm";
+import { userLogin } from "../../service/userService";
 
 function LoginForm(props) {
   const [showSignupForm, setShowSignupForm] = useState(false);
@@ -25,7 +26,9 @@ function LoginForm(props) {
   };
   const handleLoginFormSubmit = (e) => {
     e.preventDefault();
-    console.log(loginFormValue);
+    userLogin(loginFormValue).then((res) => {
+      console.log("login then " + JSON.stringify(res));
+    })
   };
   return (
     <>
