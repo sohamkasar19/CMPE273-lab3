@@ -27,7 +27,11 @@ exports.user_signup_post = async (req, res) => {
           expiresIn: 8 * 3600,
         },
         (err, token) => {
-          res.json({ status: "ok", token: "JWT "+token, user: newUser });
+          res.json({
+            status: "ok",
+            token: "JWT " + token,
+            user: newUser,
+          });
         }
       );
     }
@@ -51,7 +55,11 @@ exports.user_login_post = async (req, res) => {
               expiresIn: 8 * 3600,
             },
             (err, token) => {
-              res.json({ status: "ok", token: "JWT "+token, user: user });
+              res.json({
+                status: "ok",
+                token: "JWT " + token,
+                user: user,
+              });
             }
           );
         }
