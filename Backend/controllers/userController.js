@@ -29,7 +29,7 @@ exports.user_signup_post = async (req, res) => {
         (err, token) => {
           res.json({
             status: "ok",
-            token: "JWT " + token,
+            token: "Bearer " + token,
             user: newUser,
           });
         }
@@ -57,7 +57,7 @@ exports.user_login_post = async (req, res) => {
             (err, token) => {
               res.json({
                 status: "ok",
-                token: "JWT " + token,
+                token: "Bearer " + token,
                 user: user,
               });
             }

@@ -3,7 +3,8 @@ var cors = require("cors");
 var mongoose = require("mongoose");
 var cookieParser = require("cookie-parser");
 var passport = require("passport");
-require("./utils/passport")(passport);
+// require("./utils/passport")(passport);
+require("./utils/passport");
 var session = require('express-session');
 
 var constants = require("./utils/config");
