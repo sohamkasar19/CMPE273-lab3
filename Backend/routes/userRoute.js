@@ -4,7 +4,7 @@ const users = express();
 const constants = require("../utils/config.js");
 
 var userController = require("../controllers/userController");
-const { checkAuth } = require('../utils/authPassport.js');
+
 const passport = require('passport');
 
 users.post('/signup', userController.user_signup_post);
