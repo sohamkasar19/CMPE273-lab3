@@ -7,6 +7,7 @@ import NavBar from "./components/navBar/NavBar";
 import Footer from './components/Footer/Footer';
 import HomePage from './components/HomePage/HomePage';
 import ProfilePage from './components/Profile/ProfilePage';
+import EditProfilePage from './components/Profile/EditProfilePage';
 
 
 function App() {
@@ -24,9 +25,10 @@ function App() {
         <Route exact path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile-page" element={<ProfilePage />} />
+          <Route path="/edit-profile-page" element={<EditProfilePage />} />
           {/* <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/profile" element={<Profile />} />
+          
           
           <Route path="/item" element={<Item />} />
           <Route path="/cart" element={<Cart />} />
