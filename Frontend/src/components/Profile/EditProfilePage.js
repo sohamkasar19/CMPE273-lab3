@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 
 import { CountriesData } from './Countries'
 import { useNavigate } from "react-router";
+import { uploadImage } from "../../service/imageUploadService";
+import { backend } from "../../config/backend";
 
 export const EditProfilePage = () => {
   const navigate = useNavigate();
@@ -12,19 +14,30 @@ export const EditProfilePage = () => {
 
   
 
-  const handleChange = async (event) => {
-    
+  const handleChange =  (e) => {
+    if (e.target.name === "ProfileImage") {
+      var profilePhoto = e.target.files[0];
+      uploadImage(profilePhoto);
+      
+    } else {
+      setUserData({
+        ...userData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
-  const handleSubmit = (event) => {
-    
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(userData);
   };
 
   let profileImageData = (
     <img
       id="avatar_img"
-      src="https://www.etsy.com/images/avatars/default_avatar_400x400.png"
-      // src={formValue.ProfileImagePreview}
+      // src="https://www.etsy.com/images/avatars/default_avatar_400x400.png"
+
+      src="http://localhost:8080/images/f08297f46f68ae09cfd9851c921cbba8"
       alt=""
       className="img-fluid rounded-circle"
     />
