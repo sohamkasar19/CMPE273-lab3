@@ -17,7 +17,7 @@ const ProfilePage = () => {
  
     const { userReducer } = useSelector((state) => state);
     const userData = userReducer.userReducer;
-    console.log(userData);
+
   
 
 
@@ -58,9 +58,9 @@ const ProfilePage = () => {
       <br />
       <div className="content-container">
         <div>
-          <div class="container">
-            <div class="d-flex justify-content-between">
-              <div class="d-flex justify-content-start">
+          <div className="container">
+            <div className="d-flex justify-content-between">
+              <div className="d-flex justify-content-start">
                 <div className="image-cropper">
                   {/* <img
                     id="profile-image"
@@ -70,12 +70,12 @@ const ProfilePage = () => {
                   /> */}
                   {profileImageData}
                 </div>
-                <h4 class="display-6">&nbsp;&nbsp;{userData.NAME}</h4>
+                <h4 className="display-6">&nbsp;&nbsp;{userData.NAME}</h4>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <EditIcon fontSize="large"  />
               </div>
               <div className="d-flex justify-content-end">
-                <div class="d-flex flex-column">
+                <div className="d-flex flex-column">
                   <div></div>
                   <br />
                   <Button variant="dark" >
