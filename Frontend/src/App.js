@@ -2,22 +2,11 @@
 import './App.css';
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import Signup from "./components/loginSignup/signup";
-// import Login from "./components/loginSignup/login";
+
 import NavBar from "./components/navBar/NavBar";
 import Footer from './components/Footer/Footer';
-// import Profile from "./components/Profile/profile";
-// import HomePage from "./components/Home/homePage";
-// import Item from "./components/Item/itemPage";
-// import Cart from './components/Cart/cartPage';
-// import PurchasePage from './components/Purchases/purchaseHistoryPage';
-// import PurchaseDetailsPage from './components/Purchases/purchaseDetailsPage';
-// import ProfilePage from './components/Profile/profilePage';
-// import ShopPage from './components/Shop/ShopPage';
-// import ShopName from './components/Shop/ShopName';
-// import SearchPage from './components/SearchPage/SearchPage';
-// import LoginForm from './components/loginSignup/login';
-// import SignupForm from './components/loginSignup/SignupForm';
+import HomePage from './components/HomePage/HomePage';
+
 
 function App() {
   return (
@@ -31,8 +20,8 @@ function App() {
           <NavBar>New navigation</NavBar>
       
         <Routes>
-        {/* <Route exact path="/" element={<HomePage />} /> */}
-          {/* <Route path="/home" element={<HomePage />} /> */}
+        <Route exact path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
         
           {/* <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
