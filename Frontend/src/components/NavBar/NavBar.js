@@ -7,13 +7,17 @@ import {
   Form,
   FormControl,
 } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { userLogout } from "../../store/actions/userActions";
 import LoginSignup from "../loginSignup/LoginSignup";
 
 function NavBar() {
+  const dispatch = useDispatch();
   let LoginSignupButton = (
     <Nav.Link className="border-left pl-2 ms-auto" href="">
       <LoginSignup />
+      <Button onClick={() => dispatch(userLogout())}>logout</Button>
     </Nav.Link>
   );
 
