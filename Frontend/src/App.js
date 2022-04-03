@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/navBar/NavBar";
 import Footer from './components/Footer/Footer';
 import HomePage from './components/HomePage/HomePage';
+import ProfilePage from './components/Profile/ProfilePage';
 
 
 function App() {
@@ -22,11 +23,11 @@ function App() {
         <Routes>
         <Route exact path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />
-        
+          <Route path="/profile-page" element={<ProfilePage />} />
           {/* <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/profile-page" element={<ProfilePage />} />
+          
           <Route path="/item" element={<Item />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/purchase" element={<PurchasePage />} />
