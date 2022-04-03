@@ -18,6 +18,7 @@ const secret = constants.SECRET;
 
 
 var userRoute = require('./routes/userRoute.js');
+var imageUploadRoute = require('./routes/imageUploadRoute.js');
 
 //set up cors
 app.use(cors({ origin: frontEnd, credentials: true }));
@@ -67,6 +68,8 @@ app.use(function (err, req, res, next) {
 
 //Routes
 app.use('/user', userRoute); 
+
+app.use('/images', imageUploadRoute)
 
 
 
