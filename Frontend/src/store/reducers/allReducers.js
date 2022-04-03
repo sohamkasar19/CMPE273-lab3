@@ -1,18 +1,19 @@
 import { combineReducers } from "redux";
-// import { USER_LOGOUT } from "../actions/action-types/user-actions";
+import { USER_LOGOUT } from "../actions/action-types/user-actions";
 import userReducer from "./userReducer";
-// import storage from 'redux-persist/lib/storage';
+import currencyReducer from "./currencyReducer";
+import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({
-    userReducer
+    userReducer, currencyReducer
 })
 
-// const allReducers = (state, action) => {
-//     // if(action.type === USER_LOGOUT) {
-//     //     storage.removeItem('persist:root');
-//     //     state = undefined;
-//     // }
-//     return rootReducer(state, action);
-// }
+const allReducers = (state, action) => {
+    if(action.type === USER_LOGOUT) {
+        storage.removeItem('persist:root');
+        state = undefined;
+    }
+    return rootReducer(state, action);
+}
 
-export default rootReducer;
+export default allReducers;

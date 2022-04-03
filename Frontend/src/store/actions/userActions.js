@@ -1,4 +1,4 @@
-import { USER_INFO, USER_LOGOUT } from "./action-types/user-actions";
+import { CHANGE_CURRENCY, USER_INFO, USER_LOGOUT } from "./action-types/user-actions";
 
 export function userInfo(values){
     return{
@@ -12,6 +12,13 @@ export function userLogout(){
         type:USER_LOGOUT      
     }
 }
+
+export const changeCurrency = (currency) => {
+    return {
+        type: CHANGE_CURRENCY,
+        payload:currency
+    };
+};
 
 
 

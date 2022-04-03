@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
-import storage from "redux-persist/lib/storage";
-import { USER_INFO, USER_LOGOUT } from "../actions/action-types/user-actions";
+import { USER_INFO } from "../actions/action-types/user-actions";
 
 const initialState = {};
 
@@ -9,9 +8,9 @@ const userReducer = (state = initialState, action) => {
     case USER_INFO:
       return { ...action.payload };
 
-    case USER_LOGOUT:
-      storage.removeItem("persist:root");
-      return (state = {});
+    // case USER_LOGOUT:
+    //   storage.removeItem("persist:root");
+    //   return (state = {});
 
     default:
       return state;
