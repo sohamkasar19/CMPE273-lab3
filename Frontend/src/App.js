@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import Signup from "./components/loginSignup/signup";
 // import Login from "./components/loginSignup/login";
 import NavBar from "./components/navBar/NavBar";
+import Footer from './components/Footer/Footer';
 // import Profile from "./components/Profile/profile";
 // import HomePage from "./components/Home/homePage";
 // import Item from "./components/Item/itemPage";
@@ -26,13 +27,13 @@ function App() {
        
      
       <BrowserRouter>
-      {/* <div className="content-container">
-          <NavBar>New navigation</NavBar> */}
+      <div className="content-container">
+          <NavBar>New navigation</NavBar>
       
         <Routes>
         {/* <Route exact path="/" element={<HomePage />} /> */}
           {/* <Route path="/home" element={<HomePage />} /> */}
-          <Route path="/navbar" element={<NavBar />} />
+        
           {/* <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/profile" element={<Profile />} />
@@ -46,7 +47,10 @@ function App() {
           <Route path="/search-page" element={<SearchPage />} /> */}
         </Routes>
 
-        {/* </div> */}
+        </div>
+        <div className="footer--pin">
+          <Footer  />
+        </div>
       </BrowserRouter>
      
     </div>
