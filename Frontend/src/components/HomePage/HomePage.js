@@ -7,15 +7,15 @@ import { useSelector } from "react-redux";
 
 const HomePage = () => {
   const { userReducer } = useSelector((state) => state);
+  const userData = userReducer.userReducer;
 
 
   let welcomeBoard = <p>Explore one-of-a-kind finds from independent makers</p>;
 
-  if (userReducer.userReducer.NAME) {
-    const username = userReducer.userReducer.NAME;
+  if (userData.NAME) {
     welcomeBoard = (
       <p>
-        Welcome to Etsy, <a href="/profile-page">{username}</a>!
+        Welcome to Etsy, <a href="/profile-page">{userData.NAME}</a>!
       </p>
     );
   }
