@@ -5,9 +5,8 @@ const ItemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    SHOP_NAME: {
-        type: String,
-        required: true
+    SHOP: { 
+        type: mongoose.Schema.ObjectId, ref: 'Shop' 
     },
     CATEGORY: {
         type: String,
@@ -15,6 +14,10 @@ const ItemSchema = new mongoose.Schema({
     },
     ITEM_IMAGE: {
         type: String
+    },
+    PRICE: {
+        type: Number,
+        required: true
     },
     QUANTITY_AVAILABLE: {
         type: Number,

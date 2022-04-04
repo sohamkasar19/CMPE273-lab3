@@ -39,26 +39,12 @@ const UserSchema = new mongoose.Schema({
         type: String
     },
     
-    SHOP:
-        {
-            SHOP_NAME: String,
-            SHOP_IMAGE: String,
-            SHOP_ITEMS: [
-                { type: mongoose.Schema.ObjectId, ref: 'Item' }
-            ]
-        }
+    SHOP:{
+        type: mongoose.Schema.ObjectId, ref: 'Shop' 
+    }
     ,
-    ORDERS: [
-        {
-            ORDER_ID: String,
-            ORDER_DATE: Date,
-            TOTAL: Number,
-            ORDER_ITEMS: [{
-                ORDER_ITEMs: { type: mongoose.Schema.ObjectId, ref: 'Item' },
-                PRICE : Number,
-                Quantity : Number
-            }]
-        }
+    ORDER_HISTORY: [
+        { type: mongoose.Schema.ObjectId, ref: 'Order' }
     ],
     FAVOURITES: [
         { type: mongoose.Schema.ObjectId, ref: 'Item' }
