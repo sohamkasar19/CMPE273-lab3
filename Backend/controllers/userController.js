@@ -69,3 +69,47 @@ exports.user_login_post = async (req, res) => {
     }
   });
 };
+
+exports.user_edit_profile_put = async (req, res) => {
+  const {
+    email,
+    name,
+    phonenumber,
+    gender,
+    DOB,
+    address,
+    city,
+    country,
+    profilephoto,
+  } = req.body.data;
+  User.findOne({
+    EMAIL: email,
+  })
+  .then((user) => {
+    user.NAME = name ?? "";
+    user.PHONE_NO = phonenumber ?? "";
+    user.GENDER = gender ?? "";
+    user.DOB = DOB ?? "";
+    user.ADDRESS = address ?? "";
+    user.CITY = city ?? "";
+    user.COUNTRY = country ?? "";
+    user.PROFILE_IMAGE = profilephoto ?? "";
+    user.save((error) => {
+      if (error) {
+        throw error;
+      }
+    });
+    res.json({
+      status: "ok",
+      user: user,
+    });
+  })
+  .catch((err) => {
+    res.json({
+      status: "error",
+      error: err,
+      message: 'error while updating user'
+    });
+  });
+
+};

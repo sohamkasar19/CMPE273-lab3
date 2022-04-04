@@ -10,7 +10,6 @@ const app = express();
 
 app.get('/:key',  (req, res) => {
     const key = req.params.key;
-    console.log("key ", key);
     const readStream = getFileStream(key);
     readStream.pipe(res);
 })
@@ -21,7 +20,10 @@ app.post('/', passport.authenticate('jwt', { session: false }) ,  upload.single(
     const result = await uploadFile(file);
     res.json({
         status: "ok",
-        message: 'file uploaded successfully'
+        message: 'file uploaded successfully',
+        image: {
+            PROFILE_IMAGE: result.Key
+        }
       });
 })
 module.exports = app;

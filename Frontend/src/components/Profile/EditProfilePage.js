@@ -5,20 +5,48 @@ import React, { useEffect, useState } from "react";
 
 import { CountriesData } from './Countries'
 import { useNavigate } from "react-router";
-import { uploadImage } from "../../service/imageUploadService";
 import { backend } from "../../config/backend";
+import { userEditProfile, userUploadProfileImage } from "../../service/userService";
+import { useDispatch, useSelector } from "react-redux";
 
 export const EditProfilePage = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({});
 
+  const { userReducer } = useSelector((state) => state);
+  const userReduxData = userReducer.userReducer;
+
+  const [userData, setUserData] = useState({
+    name: userReduxData.NAME,
+    email: userReduxData.EMAIL,
+    phonenumber: userReduxData.PHONE_NO,
+    gender: userReduxData.GENDER,
+    DOB: userReduxData.DOB,
+    address: userReduxData.ADDRESS,
+    city: userReduxData.CITY,
+    country: userReduxData.COUNTRY,
+    profilephoto: userReduxData.PROFILE_IMAGE
+  });
+
+  const dispatch = useDispatch();
   
 
   const handleChange =  (e) => {
-    if (e.target.name === "ProfileImage") {
-      var profilePhoto = e.target.files[0];
-      uploadImage(profilePhoto);
-      
+    if (e.target.name === "profilephoto") {
+      var ProfilePhoto = e.target.files[0];
+      const imageData = new FormData();
+      imageData.append("image", ProfilePhoto);
+      dispatch(userUploadProfileImage(imageData))
+      .then(async (res) => {
+        const { PROFILE_IMAGE } = res.payload;
+        setUserData({
+          ...userData,
+          "profilephoto": PROFILE_IMAGE,
+        });
+      // setUserData({
+      //   ...userData,
+      //   [e.target.name]: ProfilePhoto,
+      // });
+      })
     } else {
       setUserData({
         ...userData,
@@ -27,21 +55,48 @@ export const EditProfilePage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(userData);
-  };
 
+    // if(userData.profilephoto) {
+    //   const imageData = new FormData();
+    //   imageData.append("image", userData.profilephoto);
+    //   dispatch(userUploadProfileImage(imageData))
+    //   .then(async (res) => {
+    //     const { PROFILE_IMAGE } = res.payload;
+    //     setUserData({
+    //       ...userData,
+    //       "profilephoto": PROFILE_IMAGE,
+    //     });
+    //     dispatch(userEditProfile(userData));
+    //   })
+    // }
+    // else {
+      dispatch(userEditProfile(userData));
+    // }
+
+  };
+  let imgURL =  `${backend}/images/${userReduxData.PROFILE_IMAGE}`;
   let profileImageData = (
+    
     <img
       id="avatar_img"
-      // src="https://www.etsy.com/images/avatars/default_avatar_400x400.png"
-
-      src="http://localhost:8080/images/f08297f46f68ae09cfd9851c921cbba8"
-      alt=""
+      src={userReduxData.PROFILE_IMAGE ? imgURL : "https://www.etsy.com/images/avatars/default_avatar_400x400.png"}
+      alt="https://www.etsy.com/images/avatars/default_avatar_400x400.png"
       className="img-fluid rounded-circle"
     />
   );
+  if(userData.profilephoto) {
+    let imgURL = `${backend}/images/${userData.profilephoto}`;
+    profileImageData = (
+      <img
+        id="profile-image"
+        src={imgURL}
+        alt=""
+        className="img-fluid rounded-circle"
+      />
+    );
+  }
   
 
   return (
@@ -98,7 +153,7 @@ export const EditProfilePage = () => {
                     type="file"
                     className="upload-new-avatar"
                     id="avatar"
-                    name="ProfileImage"
+                    name="profilephoto"
                     size="15"
                     aria-describedby="changing-avatar-disabled avatar-technical-hint"
                     onChange={handleChange}
@@ -141,9 +196,9 @@ export const EditProfilePage = () => {
                     aria-describedby="the_reason"
                     type="text"
                     autoComplete="off"
-                    name="Name"
-                    id="Name"
-                    value={userData.Name ?? ""}
+                    name="name"
+                    id="name"
+                    value={userData.name ?? ""}
                     onChange={handleChange}
                   />
                 </p>
@@ -158,10 +213,11 @@ export const EditProfilePage = () => {
                     aria-describedby="the_reason"
                     type="email"
                     autoComplete="off"
-                    name="Email"
-                    id="Email"
-                    value={userData.Email ?? ""}
+                    name="email"
+                    id="email"
+                    value={userData.email ?? ""}
                     onChange={handleChange}
+                    disabled
                     required
                   />
                 </div>
@@ -178,9 +234,9 @@ export const EditProfilePage = () => {
                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                     placeholder="123-456-6789"
                     autoComplete="off"
-                    name="Phonenumber"
-                    id="Phonenumber"
-                    value={userData.Phonenumber ?? ""}
+                    name="phonenumber"
+                    id="phonenumber"
+                    value={userData.phonenumber ?? ""}
                     onChange={handleChange}
                     className="text"
                   />
@@ -203,9 +259,9 @@ export const EditProfilePage = () => {
                     <input
                       type="radio"
                       value="female"
-                      name="Gender"
+                      name="gender"
                       id="female"
-                      checked={userData.Gender === "female"}
+                      checked={userData.gender === "female"}
                       onChange={handleChange}
                     />
                   </label>
@@ -214,9 +270,9 @@ export const EditProfilePage = () => {
                     <input
                       type="radio"
                       value="male"
-                      name="Gender"
+                      name="gender"
                       id="male"
-                      checked={userData.Gender === "male"}
+                      checked={userData.gender === "male"}
                       onChange={handleChange}
                     />
                   </label>
@@ -226,9 +282,9 @@ export const EditProfilePage = () => {
                     <input
                       type="radio"
                       value="private"
-                      name="Gender"
+                      name="gender"
                       id="private"
-                      checked={userData.Gender === "private"}
+                      checked={userData.gender === "private"}
                       onChange={handleChange}
                     />
                   </label>
@@ -263,9 +319,9 @@ export const EditProfilePage = () => {
                     aria-describedby="the_reason"
                     type="text"
                     autoComplete="off"
-                    name="Address"
-                    id="Address"
-                    value={userData.Address ?? ""}
+                    name="address"
+                    id="address"
+                    value={userData.address ?? ""}
                     onChange={handleChange}
                     className="text"
                   />
@@ -281,9 +337,9 @@ export const EditProfilePage = () => {
                     aria-describedby="the_reason"
                     type="text"
                     autoComplete="off"
-                    name="City"
-                    id="City"
-                    value={userData.City ?? ""}
+                    name="city"
+                    id="city"
+                    value={userData.city ?? ""}
                     onChange={handleChange}
                     className="text"
                   />
@@ -305,7 +361,7 @@ export const EditProfilePage = () => {
                     onChange={handleChange}
                     className="text"
                   /> */}
-                  <select name="Country"  id="Country" value={userData.Country} defaultValue="none" onChange={handleChange}>
+                  <select name="country"  id="country" value={userData.country} defaultValue="none" onChange={handleChange}>
                   <option value="none" key="none"  disabled hidden>Select Country</option>
                     {CountriesData.data.map((item) => (
                         <option value={item.country} key={item.country}>{item.country}</option>

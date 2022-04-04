@@ -29,6 +29,9 @@ const UserSchema = new mongoose.Schema({
     ADDRESS: {
         type: String
     },
+    COUNTRY: {
+        type: String
+    },
     ABOUT: {
         type: String
     },

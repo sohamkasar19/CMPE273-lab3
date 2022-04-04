@@ -8,6 +8,7 @@ import { Button } from "react-bootstrap";
 
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { backend } from "../../config/backend";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -42,11 +43,21 @@ const ProfilePage = () => {
     <img
       id="avatar_img"
       src="https://www.etsy.com/images/avatars/default_avatar_400x400.png"
-      // src={formValue.ProfileImagePreview}
       alt=""
       className="img-fluid rounded-circle"
     />
   );
+  if(userData.PROFILE_IMAGE) {
+    const imgURL = `${backend}/images/${userData.PROFILE_IMAGE}`;
+    profileImageData = (
+      <img
+        id="profile-image"
+        src={imgURL}
+        alt=""
+        className="img-fluid rounded-circle"
+      />
+    );
+  }
 
   return (
     <>
@@ -57,12 +68,6 @@ const ProfilePage = () => {
             <div className="d-flex justify-content-between">
               <div className="d-flex justify-content-start">
                 <div className="image-cropper">
-                  {/* <img
-                    id="profile-image"
-                    src={userData.ProfileImage}
-                    alt="Avatar"
-                    style={{ width: "200px" }}
-                  /> */}
                   {profileImageData}
                 </div>
                 <h4 className="display-6">&nbsp;&nbsp;{userData.NAME}</h4>

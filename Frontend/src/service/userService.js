@@ -31,11 +31,20 @@ export const userSignup = (data) => {
 
 export const userEditProfile = (data) => {
   return (dispatch) =>
-    axios.post(`${backend}/user/edit-profile`, { data }, {
-      headers: headers })
+    axios.put(`${backend}/user/edit-profile`, { data }, { headers: headers })
       .then((res) => {
       if (res.data.status === "ok") {
         return dispatch(userInfo(res.data.user));
       }
     });
+};
+
+export const userUploadProfileImage = (data) => {
+  return (dispatch) => 
+    axios.post(`${backend}/images/`, data, {headers: headers})
+    .then((res) => {
+      if(res.data.status === 'ok') {
+        return dispatch(userInfo(res.data.image));
+      }
+    })
 };

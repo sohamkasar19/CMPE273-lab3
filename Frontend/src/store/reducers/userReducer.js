@@ -6,7 +6,7 @@ const initialState = {};
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_INFO:
-      return { ...action.payload };
+      return { ...state, ...action.payload };
 
     // case USER_LOGOUT:
     //   storage.removeItem("persist:root");
