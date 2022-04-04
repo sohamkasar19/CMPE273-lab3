@@ -32,7 +32,7 @@ function LoginForm(props) {
     e.preventDefault();
     dispatch(userLogin(loginFormValue)).then((res) => {
       if (res) {
-        console.log("redirect to home");
+        props.onHide();
       } else {
         setShowAlert(true);
       }

@@ -23,7 +23,7 @@ function SignupForm(props) {
     e.preventDefault();
     dispatch(userSignup(signupFormValue)).then((res) => {
       if (res) {
-        console.log("redirect to home");
+        props.onHide();
       } else {
         setShowAlert(true);
       }
