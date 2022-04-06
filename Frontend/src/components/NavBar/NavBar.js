@@ -14,6 +14,7 @@ import LoginSignup from "../loginSignup/LoginSignup";
 
 function NavBar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let LoginSignupButton = (
     <Nav.Link className="border-left pl-2 ms-auto" href="">
       <LoginSignup />
@@ -29,7 +30,7 @@ function NavBar() {
           <Navbar.Brand href="#">
             <h2
               style={{ color: "red" }}
-              // onClick={(e) => navigate("/home")}
+              onClick={(e) => navigate("/home")}
             >
               &nbsp;&nbsp;&nbsp; Etsy
             </h2>
