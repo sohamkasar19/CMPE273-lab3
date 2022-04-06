@@ -8,6 +8,7 @@ import Footer from './components/Footer/Footer';
 import HomePage from './components/HomePage/HomePage';
 import ProfilePage from './components/Profile/ProfilePage';
 import EditProfilePage from './components/Profile/EditProfilePage';
+import ShopName from './components/Shop/ShopName';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile-page" element={<ProfilePage />} />
           <Route path="/edit-profile-page" element={<EditProfilePage />} />
+          <Route path="/name-your-shop" element={<ShopName />} />
           {/* <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
           

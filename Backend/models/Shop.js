@@ -8,11 +8,13 @@ const ShopSchema = new mongoose.Schema({
     },
     SHOP_IMAGE: {
         type: String,
-        required: true
     },
     SHOP_ITEMS: [
         { type: mongoose.Schema.ObjectId, ref: 'Item' }
-    ]
+    ],
+    OWNER: {
+        type: mongoose.Schema.ObjectId, ref: 'User'
+    }
 })
 
 const Shop = mongoose.model('Shop', ShopSchema);
