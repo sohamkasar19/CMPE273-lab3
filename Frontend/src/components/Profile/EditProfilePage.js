@@ -75,6 +75,8 @@ export const EditProfilePage = () => {
       dispatch(userEditProfile(userData));
     // }
 
+    navigate('/profile-page');
+
   };
   let imgURL =  `${backend}/images/${userReduxData.PROFILE_IMAGE}`;
   let profileImageData = (
