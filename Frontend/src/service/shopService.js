@@ -23,3 +23,8 @@ export const addNewShop = (data) => {
     })
   // return axios.post(`${backend}/shop/check-shop-name`, { data })
 };
+
+export const fetchShopData = (data) => {
+  const params = new URLSearchParams([['shopid', data]]);
+  return axios.get(`${backend}/shop/details`, {params}, { headers: headers })
+}

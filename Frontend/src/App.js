@@ -9,6 +9,7 @@ import HomePage from './components/HomePage/HomePage';
 import ProfilePage from './components/Profile/ProfilePage';
 import EditProfilePage from './components/Profile/EditProfilePage';
 import ShopName from './components/Shop/ShopName';
+import ShopPage from './components/Shop/ShopPage';
 
 
 function App() {
@@ -16,8 +17,6 @@ function App() {
 
 
     <div >
-       
-     
       <BrowserRouter>
       <div className="content-container">
           <NavBar>New navigation</NavBar>
@@ -28,17 +27,14 @@ function App() {
           <Route path="/profile-page" element={<ProfilePage />} />
           <Route path="/edit-profile-page" element={<EditProfilePage />} />
           <Route path="/name-your-shop" element={<ShopName />} />
-          {/* <Route path="/signup" element={<SignupForm />} />
-          <Route path="/login" element={<LoginForm />} />
-          
-          
+          <Route path="/shop-page" element={<ShopPage />} />
+          {/* 
           <Route path="/item" element={<Item />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/purchase" element={<PurchasePage />} />
           <Route path="/purchase-details" element={<PurchaseDetailsPage />} />
-          <Route path="/your-shop" element={<ShopPage />} />
-          <Route path="/name-your-shop" element={<ShopName />} />
-          <Route path="/search-page" element={<SearchPage />} /> */}
+          <Route path="/search-page" element={<SearchPage />} /> 
+          */}
         </Routes>
 
         </div>

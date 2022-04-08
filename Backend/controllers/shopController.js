@@ -69,3 +69,20 @@ exports.shop_add_new = (req, res) => {
     //   });
     // });
 };
+
+exports.shop_details = (req, res) => {
+  const shopid = req.query.shopid;
+  Shop.findOne({
+    _id: shopid
+  })
+  .populate('OWNER')
+  // .populate('SHOP_ITEMS')
+  .exec()
+  .then(shop => {
+    res.json({ status: "ok", shop: shop });
+  })
+  .catch(error=> {
+    console.log(error);
+  })
+  
+}
