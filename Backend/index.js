@@ -19,6 +19,7 @@ const secret = constants.SECRET;
 
 var userRoute = require('./routes/userRoute.js');
 var shopRoute = require('./routes/shopRoute.js');
+var itemRoute = require('./routes/itemRoute.js');
 var imageUploadRoute = require('./routes/imageUploadRoute.js');
 
 //set up cors
@@ -74,7 +75,7 @@ app.use('/images', imageUploadRoute)
 
 app.use('/shop', shopRoute);
 
-
+app.use('/item', itemRoute);
 
 app.listen(port, () => {
   console.log("Running on "+port);
