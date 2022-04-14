@@ -67,7 +67,7 @@ const ProfilePage = () => {
         <>
           <ImageList cols={4}>
             {favouritesList.map((item) => (
-              <ImageListItem key={item.ItemId}>
+              <ImageListItem key={item._id}>
                 <img
                   id="item-image"
                   // key={item._id}
