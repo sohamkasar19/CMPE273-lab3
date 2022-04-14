@@ -76,7 +76,7 @@ exports.shop_details = (req, res) => {
     _id: shopid
   })
   .populate('OWNER')
-  // .populate('SHOP_ITEMS')
+  .populate('SHOP_ITEMS')
   .exec()
   .then(shop => {
     res.json({ status: "ok", shop: shop });

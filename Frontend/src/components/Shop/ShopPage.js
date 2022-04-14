@@ -13,6 +13,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { fetchShopData } from "../../service/shopService";
 import { useSelector } from "react-redux";
 import ShopItemForm from "./ShopItemForm";
+import { backend } from "../../config/backend";
+import ShopEditItemForm from "./ShopEditItemForm";
 // import ShopItemFormEdit from "./ShopItemFormEdit";
 
 function ShopPage() {
@@ -20,10 +22,11 @@ function ShopPage() {
   const { state } = useLocation();
 
   const [shopData, setShopData] = useState({});
-
+  const [shopItems, setShopItems] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const [ownerData, setOwnerData] = useState({});
   const [showItemForm, setShowItemForm] = useState(false);
+  const [showEditItemForm, setShowEditItemForm] = useState(false);
   const [totalSales, setTotalSales] = useState(0);
   const [showContactDetails, setShowContactDetails] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
@@ -46,17 +49,30 @@ function ShopPage() {
     // }, 0);
     // console.log(totalSold);
     // setTotalSales(totalSold);
+    // const fetchShopInfo = async (shopid) => {
+    //   let response =  await fetchShopData(shopid);
+    //   const { data } = response;
+    //   await setShopData(data.shop);
+      
+    //   // console.log(data.shop);
+    // }
 
     if (isSubscribed) {
-      // fetchAllShopData().catch(console.error());
+     
       let temp = "624e120e2371c45d82211290";
-      fetchShopData(temp).then((res) => {
+      // fetchShopInfo(temp).catch(console.error());
+      fetchShopData(temp).then(async (res) => {
         const { data } = res;
-        setShopData(data.shop);
+        setTimeout(() => {
+          setShopData(data.shop);
+        setShopItems(data.shop.SHOP_ITEMS);
+         setOwnerData(data.shop.OWNER);
+        });
         if(data.shop.OWNER._id === userReduxData._id) {
           setIsOwner(true);
         }
       });
+      
      
       
     }
@@ -64,51 +80,50 @@ function ShopPage() {
       isSubscribed = false;
     };
   }, [state,userReduxData._id]);
-  // console.log(userReduxData._id);
-  // if(shopData.OWNER._id === userReduxData._id) {
-  //   setIsOwner(true);
-  // }
   const handleImageChange = async (event) => {};
 
-  let handleEditIcon = (item) => {
+  const handleEditIcon = (item) => {
     return function () {
-      // setSelectedItem(item);
-      // setShowItemFormEdit(true);
+      setSelectedItem(item);
+      setShowEditItemForm(true);
     };
   };
+
   const imageClickHandler = (event) => {
     //   navigate("/item", {
     //     state: event.target.name,
     //   });
   };
+  
 
-  // let ShopItemImages = (
-  //   <>
-  //     <ImageList cols={4}>
-  //       {shopItems.map((item) => (
-  //         <ImageListItem key={item.ItemId}>
-  //           <img
-  //             src={item.ItemImage}
-  //             name={item.ItemId}
-  //             alt={item.ItemName}
-  //             loading="lazy"
-  //             onClick={imageClickHandler}
-  //           />
-  //           <ImageListItemBar
-  //             title={item.ItemName}
-  //             subtitle={"Sales: " + item.QuantitySold}
-  //             actionIcon={
-  //               isOwner && (
-  //                 <EditIcon fontSize="medium" onClick={handleEditIcon(item)} />
-  //               )
-  //             }
-  //             position="below"
-  //           />
-  //         </ImageListItem>
-  //       ))}
-  //     </ImageList>
-  //   </>
-  // );
+
+  let ShopItemImages = (
+    <>
+      <ImageList cols={4}>
+        {shopItems.map((item) => (
+          <ImageListItem key={item._id}>
+            <img
+              src={`${backend}/images/${item.ITEM_IMAGE}`}
+              name={item._id}
+              alt={item.ITEM_NAME}
+              loading="lazy"
+              onClick={imageClickHandler}
+            />
+            <ImageListItemBar
+              title={item.ITEM_NAME}
+              subtitle={"Sales: " + item.QUANTITY_SOLD}
+              actionIcon={
+                isOwner && (
+                  <EditIcon fontSize="medium" onClick={handleEditIcon(item)} />
+                )
+              }
+              position="below"
+            />
+          </ImageListItem>
+        ))}
+      </ImageList>
+    </>
+  );
 
   let OwnerImage = (
     <img
@@ -120,25 +135,26 @@ function ShopPage() {
       className="img-fluid rounded-circle"
     />
   );
-  // if (ownerData.ProfileImage) {
-  //   OwnerImage = (
-  //     <img
-  //       style={{ width: 100, height: 100 }}
-  //       id="profile-image"
-  //       src={ownerData.ProfileImage}
-  //       alt=""
-  //       className="img-fluid rounded-circle"
-  //     />
-  //   );
-  // }
+  if (shopData.OWNER) {
+     let imgURL = `${backend}/images/${shopData.OWNER.PROFILE_IMAGE}`;
+    OwnerImage = (
+      <img
+        style={{ width: 100, height: 100 }}
+        id="profile-image"
+        src={imgURL}
+        alt=""
+        className="img-fluid rounded-circle"
+      />
+    );
+  }
 
   let contactDetails = null;
   if (showContactDetails) {
-    contactDetails = <p>Email : {ownerData.Email}</p>;
+    contactDetails = <p>Email : {shopData.OWNER.EMAIL}</p>;
   }
   let shopImage = (
     <img
-      style={{ width: 150 }}
+      style={{ width: 150, height: 150 }}
       className="shop-icon-external wt-rounded wt-display-block snipcss-Q6mLH snip-img"
       srcSet="https://www.etsy.com/images/avatars/default_shop_icon_500x500.png 500w,
                                                                                https://www.etsy.com/images/avatars/default_shop_icon_280x280.png 280w,
@@ -198,7 +214,7 @@ function ShopPage() {
 
                 {/* <br/> */}
                 <div className="d-flex justify-content-center">
-                  {ownerData.Name}
+                  {ownerData.NAME}
                 </div>
                 <div className="d-flex justify-content-center">
                   <Button
@@ -238,8 +254,14 @@ function ShopPage() {
                     data={shopData._id}
                     show={showItemForm}
                     onHide={() => setShowItemForm(false)}
-                    item={selectedItem}
                     key={selectedItem.ItemId}
+                  />
+                <ShopEditItemForm
+                    data={shopData._id}
+                    show={showEditItemForm}
+                    onHide={() => setShowEditItemForm(false)}
+                    item={selectedItem}
+                    key={selectedItem._id}
                   />
               </div>
             </div>
@@ -249,7 +271,7 @@ function ShopPage() {
       <div className="container">
         <br />
         <br />
-        {/* {ShopItemImages} */}
+        {ShopItemImages}
       </div>
     </>
   );

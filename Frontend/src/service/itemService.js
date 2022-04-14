@@ -16,3 +16,7 @@ export const itemUploadImage = (data) => {
 export const itemAddNew = (data) => {
   return axios.post(`${backend}/item/add-new`, { data }, {headers: headers})
 }
+
+export const itemEdit = (data) => {
+  return axios.post(`${backend}/item/edit`, { data }, {headers: headers})
+}

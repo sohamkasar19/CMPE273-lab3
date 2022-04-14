@@ -2,21 +2,24 @@ import axios from "axios";
 import React, {  useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { backend } from "../../config/backend";
-import { itemAddNew, itemUploadImage } from "../../service/itemService";
+import { itemAddNew, itemEdit, itemUploadImage } from "../../service/itemService";
 
 
-function ShopItemForm(props) {
+function ShopEditItemForm(props) {
   
-  // console.log(typeof shopid);
+  
+  let itemSelected = props.item;
   const [itemForm, setItemForm] = useState({
-    ShopId: props.data,
-    ItemName: "",
-    Category: "",
-    QuantityAvailable: "",
-    Price: "",
-    Description: "",
+    ItemId: props.item._id,
+    ItemName: itemSelected.ITEM_NAME,
+    Category: itemSelected.CATEGORY,
+    QuantityAvailable: itemSelected.QUANTITY_AVAILABLE,
+    Price: itemSelected.PRICE,
+    Description: itemSelected.DESCRIPTION,
     ItemImage: "",
   });
+
+
   const handleChange = async (event) => {
   
     if (event.target.name === "ItemImage" && event.target.files[0]) {
@@ -41,8 +44,8 @@ function ShopItemForm(props) {
 
   const handleItemSubmit = async (e) => {
     e.preventDefault();
-    // console.log(itemForm);
-    itemAddNew(itemForm);
+    // console.log("asd",itemForm);
+    itemEdit(itemForm);
     props.onHide();
   };
 
@@ -160,7 +163,6 @@ function ShopItemForm(props) {
                   name="ItemImage"
                   type="file"
                   onChange={handleChange}
-                  required
                 />
               
               </Col>
@@ -180,4 +182,4 @@ function ShopItemForm(props) {
   );
 }
 
-export default ShopItemForm;
+export default ShopEditItemForm;

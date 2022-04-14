@@ -44,3 +44,44 @@ exports.item_add_new = async (req, res) => {
       console.log(error);
     });
 };
+
+exports.item_edit = async (req, res) => {
+  const {
+    ItemName,
+    ItemId,
+    ShopId,
+    Category,
+    QuantityAvailable,
+    Price,
+    Description,
+    ItemImage,
+  } = req.body.data;
+  // console.log(req.body.data);
+  Item.findOne({
+    _id: ItemId
+  })
+  .then((item) => {
+    item.ITEM_NAME = ItemName
+    item.CATEGORY = Category
+    item.QUANTITY_AVAILABLE = QuantityAvailable
+    item.PRICE = Price
+    item.DESCRIPTION = Description
+    if(ItemImage) item.ITEM_IMAGE = ItemImage
+    item.save((error) => {
+      if (error) {
+        throw error;
+      }
+    });
+    res.json({
+      status: "ok",
+      item: item,
+    });
+  })
+  .catch((err) => {
+    res.json({
+      status: "error",
+      error: err,
+      message: 'error while updating item'
+    });
+  });
+};
