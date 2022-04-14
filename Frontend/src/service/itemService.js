@@ -20,3 +20,7 @@ export const itemAddNew = (data) => {
 export const itemEdit = (data) => {
   return axios.post(`${backend}/item/edit`, { data }, {headers: headers})
 }
+
+export const getAllItems = () => {
+  return axios.get(`${backend}/item/all`)
+}
