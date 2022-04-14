@@ -6,6 +6,7 @@ import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getAllItems } from "../../service/itemService";
 import { backend } from "../../config/backend";
+import Favourite from "./Favourite";
 
 const HomePage = () => {
   const { userReducer } = useSelector((state) => state);
@@ -55,7 +56,7 @@ const HomePage = () => {
         <ImageListItemBar 
         sx={{backgroundColor: "transparent"}}
           title={ <Button style={{backgroundColor:"black", borderRadius:"40px" }} > {item.PRICE}</Button>}
-          // actionIcon={<Favourite data={item}></Favourite>}
+          actionIcon={<Favourite data={item}></Favourite>}
         />
       </ImageListItem>
     ));

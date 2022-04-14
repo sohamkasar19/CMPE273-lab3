@@ -1,20 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProfilePage.css";
 
 import EditIcon from "@mui/icons-material/Edit";
 
-import { Box } from "@mui/material";
+import { Box, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { Button } from "react-bootstrap";
 
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { backend } from "../../config/backend";
+import { getFavourites } from "../../service/userService";
 
 const ProfilePage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const { userReducer } = useSelector((state) => state);
   const userData = userReducer.userReducer;
+
+  const [favouritesList, setFavouritesList] = useState([]);
+
+  useEffect(() => {
+    let isSubscribed = true;
+    let fetchFavorites = () => {
+      if(userData.FAVOURITES.length > 0) {
+        getFavourites(userData._id)
+        .then((res) => {
+          // console.log(res);
+          setFavouritesList(res.data.favourites);
+        })
+      }
+    }
+    if(isSubscribed) {
+      fetchFavorites();
+    }
+    return () => {
+      isSubscribed = false;
+    }
+  }, [userData.FAVOURITES.length, userData._id])
+  
 
   const handleEditIcon = () => {
     navigate('/edit-profile-page');
@@ -38,6 +61,32 @@ const ProfilePage = () => {
       </Box>
     </>
   );
+  if(userData.FAVOURITES.length > 0) {
+    // console.log(userData._id);
+      FavouriteItemList = (
+        <>
+          <ImageList cols={4}>
+            {favouritesList.map((item) => (
+              <ImageListItem key={item.ItemId}>
+                <img
+                  id="item-image"
+                  // key={item._id}
+                  src={`${backend}/images/${item.ITEM_IMAGE}`}
+                  name={item.ITEM_NAME}
+                  // src={`${item.ItemImage}?w=248&fit=crop&auto=format`}
+                  // srcSet={`${item.ItemImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  onClick={imageClickHandler}
+                  alt={item.ITEM_NAME}
+                  loading="lazy"
+                />
+                <ImageListItemBar title={item.ITEM_NAME} />
+              </ImageListItem>
+            ))}
+          </ImageList>
+        </>
+      );
+    
+  }
 
   let profileImageData = (
     <img

@@ -113,3 +113,54 @@ exports.user_edit_profile_put = async (req, res) => {
   });
 
 };
+
+exports.user_add_favourite = async (req, res) => {
+  const {itemId, userId} = req.body.data;
+  User.findOne({
+    _id: userId
+  })
+  .then((user) => {
+    user.FAVOURITES.push(itemId)
+    user.save()
+    res.json({
+      status: "ok",
+      favourites: {
+        FAVOURITES: user.FAVOURITES
+      },
+    })
+  })
+};
+
+exports.user_remove_favourite = async (req, res) => {
+  const {itemId, userId} = req.body.data;
+  // console.log(userId, itemId);
+  User.findOne({
+    userId: userId
+  })
+  .then((user) => {
+    user.FAVOURITES.pull(itemId)
+    user.save()
+    res.json({
+      status: "ok",
+      favourites: {
+        FAVOURITES: user.FAVOURITES
+      },
+    })
+  })
+};
+
+exports.user_get_favourites = async (req, res) => {
+  const userId = req.body.data;
+  // console.log(userId);
+  User.findOne({
+    _id: userId
+  })
+  .populate('FAVOURITES')
+  .exec()
+  .then(user => {
+    res.json({ status: "ok", favourites: user.FAVOURITES });
+  })
+  .catch(error=> {
+    console.log(error);
+  })
+};
