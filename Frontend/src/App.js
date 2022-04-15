@@ -10,6 +10,7 @@ import ProfilePage from './components/Profile/ProfilePage';
 import EditProfilePage from './components/Profile/EditProfilePage';
 import ShopName from './components/Shop/ShopName';
 import ShopPage from './components/Shop/ShopPage';
+import ItemPage from './components/Item/ItemPage';
 
 
 function App() {
@@ -28,8 +29,9 @@ function App() {
           <Route path="/edit-profile-page" element={<EditProfilePage />} />
           <Route path="/name-your-shop" element={<ShopName />} />
           <Route path="/shop-page" element={<ShopPage />} />
+          <Route path="/item" element={<ItemPage />} />
           {/* 
-          <Route path="/item" element={<Item />} />
+          
           <Route path="/cart" element={<Cart />} />
           <Route path="/purchase" element={<PurchasePage />} />
           <Route path="/purchase-details" element={<PurchaseDetailsPage />} />

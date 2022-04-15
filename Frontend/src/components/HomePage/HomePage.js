@@ -7,10 +7,13 @@ import { useSelector } from "react-redux";
 import { getAllItems } from "../../service/itemService";
 import { backend } from "../../config/backend";
 import Favourite from "./Favourite";
+import { useNavigate } from "react-router";
 
 const HomePage = () => {
   const { userReducer } = useSelector((state) => state);
   const userData = userReducer.userReducer;
+
+  const navigate = useNavigate();
 
   const [itemList, setItemList] = useState([]);
 
@@ -33,6 +36,11 @@ const HomePage = () => {
     }
   }, [])
   
+  const imageClickHandler = (e) => {
+    navigate("/item", {
+      state: e.target.name,
+    });
+  }
 
   let welcomeBoard = <p>Explore one-of-a-kind finds from independent makers</p>;
 
@@ -46,12 +54,12 @@ const HomePage = () => {
   let itemImageData = <>Loading Images</>;
   if (itemList) {
     itemImageData = itemList.map((item) => (
-      <ImageListItem key={item.ItemId}> 
+      <ImageListItem key={item._id}> 
         <img
           src={`${backend}/images/${item.ITEM_IMAGE}`}
           name={item._id}
           alt={item.ITEM_NAME}
-          // onClick={imageClickHandler}
+          onClick={imageClickHandler}
         />
         <ImageListItemBar 
         sx={{backgroundColor: "transparent"}}

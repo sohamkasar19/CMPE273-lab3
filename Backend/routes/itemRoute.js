@@ -11,4 +11,6 @@ item.post('/edit', passport.authenticate('jwt', { session: false }), itemControl
 
 item.get('/all',  itemController.item_all);
 
+item.get('/details',  itemController.item_details_by_id);
+
 module.exports = item;

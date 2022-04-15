@@ -95,3 +95,19 @@ exports.item_all =  async (req, res) => {
     }
   });
 };
+
+exports.item_details_by_id =  async (req, res) => {
+  const itemId = req.query.itemId;
+  Item.find({
+    _id: itemId
+  })
+  .populate('SHOP')
+  .exec()
+  .then(item => {
+    res.json({ status: "ok", item: item });
+  })
+  .catch(error=> {
+    console.log(error);
+  })
+ 
+};

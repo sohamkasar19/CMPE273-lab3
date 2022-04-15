@@ -23,3 +23,8 @@ export const itemEdit = (data) => {
 export const getAllItems = () => {
   return axios.get(`${backend}/item/all`);
 };
+
+export const getItemData = (data) => {
+  const params = new URLSearchParams([['itemId', data]]);
+  return axios.get(`${backend}/item/details`, {params});
+};
