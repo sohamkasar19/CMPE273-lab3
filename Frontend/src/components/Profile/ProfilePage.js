@@ -42,7 +42,9 @@ const ProfilePage = () => {
   const handleEditIcon = () => {
     navigate('/edit-profile-page');
   };
-  const handleYourShopButton = async () => {};
+  const handleYourShopButton = () => {
+    navigate('/name-your-shop')
+  };
   const imageClickHandler = (event) => {};
 
   let FavouriteItemList = (
