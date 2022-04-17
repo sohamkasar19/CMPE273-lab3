@@ -11,6 +11,8 @@ shop.post('/add-new-shop', passport.authenticate('jwt', { session: false }), sho
 
 shop.get('/details',  shopController.shop_details);
 
+shop.post('/add-photo',  shopController.shop_add_photo);
+
 // users.post('/login', userController.user_login_post);
 
 // users.put('/edit-profile', passport.authenticate('jwt', { session: false }), userController.user_edit_profile_put);

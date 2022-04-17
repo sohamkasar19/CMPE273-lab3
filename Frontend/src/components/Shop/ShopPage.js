@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router";
 // import ShopItemForm from "./ShopItemForm";
 // import ShopImage from "./ShopImage";
 import EditIcon from "@mui/icons-material/Edit";
-import { fetchShopData } from "../../service/shopService";
+import { fetchShopData, shopUploadImage, updateShopData } from "../../service/shopService";
 import { useSelector } from "react-redux";
 import ShopItemForm from "./ShopItemForm";
 import { backend } from "../../config/backend";
@@ -79,8 +79,25 @@ function ShopPage() {
     return () => {
       isSubscribed = false;
     };
-  }, [state,userReduxData._id]);
-  const handleImageChange = async (event) => {};
+  }, [state, userReduxData._id]);
+  const handleImageChange = async (event) => {
+    var shopPhoto = event.target.files[0];
+      var data = new FormData();
+      data.append("image", shopPhoto);
+      shopUploadImage(data)
+      .then((res) => {
+        const { data } = res;
+        setShopData({
+          ...shopData,
+          SHOP_IMAGE: data.image.PROFILE_IMAGE,
+        })
+        var data1 = {
+          ShopImage: data.image.PROFILE_IMAGE,
+          ShopId: shopData._id,
+        }
+        updateShopData(data1);
+      })
+  };
 
   const handleEditIcon = (item) => {
     return function () {
@@ -90,9 +107,9 @@ function ShopPage() {
   };
 
   const imageClickHandler = (event) => {
-    //   navigate("/item", {
-    //     state: event.target.name,
-    //   });
+      navigate("/item", {
+        state: event.target.name,
+      });
   };
   
 
@@ -156,15 +173,18 @@ function ShopPage() {
     <img
       style={{ width: 150, height: 150 }}
       className="shop-icon-external wt-rounded wt-display-block snipcss-Q6mLH snip-img"
-      srcSet="https://www.etsy.com/images/avatars/default_shop_icon_500x500.png 500w,
-                                                                               https://www.etsy.com/images/avatars/default_shop_icon_280x280.png 280w,
-                                                                               https://www.etsy.com/images/avatars/default_shop_icon_180x180.png 180w,
-                                                                            https://www.etsy.com/images/avatars/default_shop_icon_75x75.png 75w"
-      src="https://www.etsy.com/images/avatars/default_shop_icon_180x180.png"
+      // srcSet="https://www.etsy.com/images/avatars/default_shop_icon_500x500.png 500w,
+      //                                                                          https://www.etsy.com/images/avatars/default_shop_icon_280x280.png 280w,
+      //                                                                          https://www.etsy.com/images/avatars/default_shop_icon_180x180.png 180w,
+      //                                                                       https://www.etsy.com/images/avatars/default_shop_icon_75x75.png 75w"
+      src={shopData.SHOP_IMAGE ? `${backend}/images/${shopData.SHOP_IMAGE}` :"https://www.etsy.com/images/avatars/default_shop_icon_180x180.png"}
       sizes="(min-width: 900px) 18vw, 30vw"
       alt=""
     />
   );
+  if(shopData.SHOP_IMAGE) {
+    
+  }
 
   return (
     <>

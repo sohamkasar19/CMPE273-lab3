@@ -28,3 +28,11 @@ export const fetchShopData = (data) => {
   const params = new URLSearchParams([['shopid', data]]);
   return axios.get(`${backend}/shop/details`, {params}, { headers: headers })
 }
+
+export const shopUploadImage = (data) => {
+  return axios.post(`${backend}/images/`, data, { headers: headers });
+};
+
+export const updateShopData = (data) => {
+  return axios.post(`${backend}/shop/add-photo`, {data}, { headers: headers });
+};

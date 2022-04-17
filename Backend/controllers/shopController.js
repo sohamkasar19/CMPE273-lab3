@@ -86,3 +86,20 @@ exports.shop_details = (req, res) => {
   })
   
 }
+
+exports.shop_add_photo = (req, res) => {
+  const {ShopImage, ShopId} = req.body.data;
+  // console.log(req.body.data);
+  Shop.findOne({
+    _id: ShopId
+  })
+  .then((shop) => {
+    // console.log(shop);
+    shop.SHOP_IMAGE = ShopImage
+    shop.save()
+    res.json({ status: "ok"})
+  })
+  .catch(error=> {
+    console.log(error);
+  })
+}
