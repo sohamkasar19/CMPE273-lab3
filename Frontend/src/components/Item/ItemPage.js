@@ -11,6 +11,7 @@ import { Button, ImageListItem, ImageListItemBar } from "@mui/material";
 import { getItemData } from "../../service/itemService";
 import { fetchShopData } from "../../service/shopService";
 import { backend } from "../../config/backend";
+import { addToCart } from "../../store/actions/userActions";
 // import Favourite from "";
 
 const ItemPage = () => {
@@ -47,7 +48,7 @@ const ItemPage = () => {
     return () => {
       isSubscribed = false;
     };
-  }, []);
+  }, [state]);
 
 //   let currencySymbol = null;
 //   if (currencyvalue === "USD") {
@@ -59,7 +60,16 @@ const ItemPage = () => {
 //   }
 
   const handleAddToCart = (event) => {
-    
+    if (itemCount > itemDetails.QUANTITY_AVAILABLE) {
+      alert("Oops!!! We don't have that much item in stock. Try Again Later!");
+    } else {
+      alert("Added to Cart");
+      let addToCartData = {
+        item: itemDetails,
+        quantity: itemCount
+      }
+      dispatch(addToCart(addToCartData));
+    }
   };
 
   const handleItemCount = (event) => {
