@@ -19,6 +19,24 @@ function ShopName() {
   const userReduxData = userReducer.userReducer;
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    let isSubscribed = true;
+    const checkIfShopExists = () => {
+      if(userReduxData.SHOP.length > 0) {
+        navigate('/shop-page', {
+          state: userReduxData.SHOP,
+        })
+      }
+    }
+    if(isSubscribed) {
+      checkIfShopExists()
+    }
+    return () => {
+      isSubscribed = false;
+    }
+  }, [navigate, userReduxData.SHOP])
+  
   
 
   let checkShopName = async () => {

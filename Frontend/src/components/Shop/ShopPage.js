@@ -36,7 +36,7 @@ function ShopPage() {
 
   // const reduxState = useSelector((state) => state);
   // const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
-  let temp = "624e120e2371c45d82211290";
+  // let temp = "624e120e2371c45d82211290";
   useEffect(() => {
     // if(!state) {
     //   navigate('/');
@@ -61,7 +61,7 @@ function ShopPage() {
      
       
       // fetchShopInfo(temp).catch(console.error());
-      fetchShopData(temp).then(async (res) => {
+      fetchShopData(state).then(async (res) => {
         const { data } = res;
         setTimeout(() => {
           setShopData(data.shop);
@@ -251,7 +251,7 @@ function ShopPage() {
                 )}
                 
                 <ShopItemForm
-                    data={temp}
+                    data={state}
                     show={showItemForm}
                     onHide={() => setShowItemForm(false)}
                     key={selectedItem.ItemId}
