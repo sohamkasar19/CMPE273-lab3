@@ -7,9 +7,9 @@ import { itemAddNew, itemUploadImage } from "../../service/itemService";
 
 function ShopItemForm(props) {
   
-  // console.log(typeof shopid);
+  // console.log(props);
   const [itemForm, setItemForm] = useState({
-    ShopId: props.data,
+    // ShopId: "",
     ItemName: "",
     Category: "",
     QuantityAvailable: "",
@@ -29,12 +29,14 @@ function ShopItemForm(props) {
         setItemForm({
           ...itemForm,
           ItemImage: data.image.PROFILE_IMAGE,
+          ShopId: props.data.toString()
         })
       })
     } else {
       setItemForm({
         ...itemForm,
         [event.target.name]: event.target.value,
+        ShopId: props.data.toString()
       });
     }
   };
@@ -43,7 +45,8 @@ function ShopItemForm(props) {
     e.preventDefault();
     // console.log(itemForm);
     itemAddNew(itemForm);
-    props.onHide();
+    // props.onHide();
+    window.location.reload(false);
   };
 
   // let imgURL = `${backend}/images/${itemForm.ItemImage}`;

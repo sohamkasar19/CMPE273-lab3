@@ -47,6 +47,7 @@ function ShopEditItemForm(props) {
     // console.log("asd",itemForm);
     itemEdit(itemForm);
     props.onHide();
+    window.location.reload(false);
   };
 
   // let imgURL = `${backend}/images/${itemForm.ItemImage}`;
