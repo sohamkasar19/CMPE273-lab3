@@ -2,10 +2,11 @@ import { combineReducers } from "redux";
 import { USER_LOGOUT } from "../actions/action-types/user-actions";
 import userReducer from "./userReducer";
 import currencyReducer from "./currencyReducer";
+import cartReducer from "./cartReducer";
 import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({
-    userReducer, currencyReducer
+    userReducer, currencyReducer, cartReducer
 })
 
 const allReducers = (state, action) => {
