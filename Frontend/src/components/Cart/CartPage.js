@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./cartPage.css";
+// import "./cartPage.css";
 import axios from "axios";
 import { useNavigate } from "react-router";
 // import { checkoutCart } from "../actions/cartActions";
-import { Button } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import EuroIcon from "@mui/icons-material/Euro";
@@ -124,7 +124,7 @@ let cartItems = cartReduxData.addedItems.map((item) => {
         </td>
         <td className="text-center">
         <div className="d-flex justify-content-center">
-            <div className="p-2"><AddCircleIcon /></div>
+            <div className="p-2"><AddCircleIcon onClick={()=> console.log(item)}/></div>
             <div className="p-2">{item.quantityInCart}</div>
             <div className="p-2"><RemoveCircleIcon /></div>
         </div>
@@ -144,6 +144,7 @@ let cartItems = cartReduxData.addedItems.map((item) => {
                   <td class="text-center">Item</td>
                   <td class="text-center">Quantity</td>
                   <td class="text-center">Price</td>
+                  <td class="text-center">Gift Package</td>
                   <td class="text-center">Total</td>
                 </tr>
               </thead>
@@ -154,41 +155,53 @@ let cartItems = cartReduxData.addedItems.map((item) => {
       );
 
   return (
+    
     <div>
-      
-        <div>
-          <div className="wrap cf">
-            <div className="heading cf">
-              <h1>My Cart</h1>
-            </div>
+      <Container>
+          <Row>
+          <Col  xs={12} md={8}>
+          <div id="content" className="d-flex justify-content-center">
+            
             <div className="cart">
               <ul className="cartWrap">{cartDetails}</ul>
             </div>
 
-            {cartReduxData.addedItems.length !== 0 && (
-              <div className="subtotal cf">
-                <ul>
-                  <li className="totalRow final">
-                    <span className="label">Total</span>
-                    <span className="value">
-                      {/* {currencySymbol} */}
-                      {cartReduxData.total.toFixed(2)}
-                    </span>
-                  </li>
-                  <li className="totalRow final">
-                    <Button
+            </div>
+
+          </Col>
+          <Col  md={{ span: 2, offset: 1 }}>
+          <div className="d-flex justify-content-center">
+              <Col>
+              <Row>
+                  <Col>
+                  <h4> Total</h4>
+                  </Col>
+                  <Col>
+                  {/* {currencySymbol} */}
+                  {cartReduxData.total.toFixed(2)}
+                  </Col>
+              </Row>
+              
+              <Row>
+              <Col md={{ span: 6, offset: 5 }}>
+              <br />
+              <Button
                       variant="dark"
                       onClick={handleCheckout}
                       className="btn continue"
                     >
                       Checkout
                     </Button>
-                  </li>
-                </ul>
+              </Col>
+              
+              </Row>
+              </Col>
               </div>
-            )}
-          </div>
-        </div>
+
+          </Col>
+          </Row>
+      </Container>
+        
       
     </div>
   );
