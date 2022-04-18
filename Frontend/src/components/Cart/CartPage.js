@@ -7,11 +7,12 @@ import { useNavigate } from "react-router";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EuroIcon from "@mui/icons-material/Euro";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { backend } from "../../config/backend";
-import { addQuantity, subtractQuantity } from "../../store/actions/userActions";
+import { addQuantity, removeItem, subtractQuantity } from "../../store/actions/userActions";
 
 
 const CartPage = () => {
@@ -67,7 +68,9 @@ let cartItems = cartReduxData.addedItems.map((item) => {
         </div>
         </td>
         <td className="text-center">{item.PRICE}</td>
+        <td className="text-center">Yes</td>
         <td className="text-center">{item.quantityInCart * item.PRICE}</td>
+        <td className="text-center"><DeleteIcon onClick={() => dispatch(removeItem(item._id))}/></td>
       </tr>
     );
   });
@@ -83,6 +86,7 @@ let cartItems = cartReduxData.addedItems.map((item) => {
                   <td class="text-center">Price</td>
                   <td class="text-center">Gift Package</td>
                   <td class="text-center">Total</td>
+                  <td class="text-center"></td>
                 </tr>
               </thead>
               <tbody>{cartItems}</tbody>
@@ -110,10 +114,13 @@ let cartItems = cartReduxData.addedItems.map((item) => {
           <div className="d-flex justify-content-center">
               <Col>
               <Row>
+              
                   <Col>
+                  <br />
                   <h4> Total</h4>
                   </Col>
                   <Col>
+                  <br />
                   {/* {currencySymbol} */}
                   {cartReduxData.total}
                   {/* {cartReduxData.total.toFixed(2)} */}
