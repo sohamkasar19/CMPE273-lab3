@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
-    ORDER_ID: {
-        type: String,
-        required: true
-    },
     ORDER_DATE: {
         type: String,
         required: true
@@ -14,9 +10,11 @@ const OrderSchema = new mongoose.Schema({
         required: true
     },
     ORDER_ITEMS: [{
-        ORDER_ITEMs: { type: mongoose.Schema.ObjectId, ref: 'Item' },
+        ORDER_ITEM: { type: mongoose.Schema.ObjectId, ref: 'Item' },
         BUY_PRICE : Number,
-        QUANTITY : Number
+        QUANTITY : Number,
+        GIFT_WRAP : Boolean,
+        MESSAGE: String
     }]
 })
 

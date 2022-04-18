@@ -21,6 +21,7 @@ var userRoute = require('./routes/userRoute.js');
 var shopRoute = require('./routes/shopRoute.js');
 var itemRoute = require('./routes/itemRoute.js');
 var imageUploadRoute = require('./routes/imageUploadRoute.js');
+var orderRoute = require('./routes/orderRoute.js');
 
 //set up cors
 app.use(cors({ origin: frontEnd, credentials: true }));
@@ -76,6 +77,8 @@ app.use('/images', imageUploadRoute)
 app.use('/shop', shopRoute);
 
 app.use('/item', itemRoute);
+
+app.use('/order', orderRoute);
 
 app.listen(port, () => {
   console.log("Running on "+port);
