@@ -12,9 +12,8 @@ const initState = {
   total: 0,
 };
 const cartReducer = (state = initState, action) => {
-  switch (action.type) {
-    case ADD_TO_CART:
-      let itemToAdd = action.payload.item;
+    if(action.type === ADD_TO_CART) {
+        let itemToAdd = action.payload.item;
       let existing_item = state.addedItems.find(
         (item) => item._id === itemToAdd._id
       );
@@ -39,20 +38,52 @@ const cartReducer = (state = initState, action) => {
           total: newTotal,
         };
       }
+    }
 
-    case CHECKOUT_CART:
-      break;
+    else if(action.type === CHECKOUT_CART) {
 
-    case REMOVE_ITEM:
-      break;
+    }
 
-    case ADD_QUANTITY:
-      break;
+    else if(action.type === REMOVE_ITEM) {
 
-    case SUB_QUANTITY:
-      break;
-    default:
-      return state;
+    }
+
+    else if(action.type === ADD_QUANTITY) {
+        let id = action.payload;
+        let item_add_quantity = state.addedItems.find(item=> item._id === id)
+        item_add_quantity.quantityInCart += 1;
+        let newTotal = state.total + item_add_quantity.PRICE
+        return{
+            ...state,
+            total: newTotal
+        }
+    }
+
+    else if(action.type === SUB_QUANTITY) {
+        let id = action.payload;
+        let item_sub_quantity = state.addedItems.find(item=> item._id === id) 
+        //if the qt == 0 then it should be removed
+        if(item_sub_quantity.quantityInCart === 1){
+            let new_items = state.addedItems.filter(item=>item._id !== id)
+            let newTotal = state.total - item_sub_quantity.PRICE
+            return{
+                ...state,
+                addedItems: new_items,
+                total: newTotal
+            }
+        }
+        else {
+            item_sub_quantity.quantityInCart -= 1
+            let newTotal = state.total - item_sub_quantity.PRICE
+            return{
+                ...state,
+                total: newTotal
+            }
+        }
+    }
+    else {
+        return state
+    }
   }
 
   //INSIDE HOME COMPONENT
@@ -117,6 +148,6 @@ const cartReducer = (state = initState, action) => {
 //   else {
 //     return state;
 //   }
-};
+// };
 
 export default combineReducers({ cartReducer });

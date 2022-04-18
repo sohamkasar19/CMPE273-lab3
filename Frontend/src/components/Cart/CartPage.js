@@ -11,6 +11,7 @@ import EuroIcon from "@mui/icons-material/Euro";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { backend } from "../../config/backend";
+import { addQuantity, subtractQuantity } from "../../store/actions/userActions";
 
 
 const CartPage = () => {
@@ -42,76 +43,12 @@ const CartPage = () => {
 
   // console.log(cartDetails);
   const handleCheckout = (e) => {
-    // if (cartDetails.addedItems.length !== 0) {
-    //   var data = {
-    //     addedItems: cartDetails.addedItems,
-    //     total: cartDetails.total,
-    //     token: token,
-    //   };
-
-    //   axios
-    //     .get(API+"/profile/check-address", {
-    //       params: {
-    //         token: token,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       console.log(response.data);
-    //       if (response.data) {
-    //         axios
-    //           .post(API+"/order/add", data)
-    //           .then((response) => {
-    //             if (response.status === 200) {
-    //               dispatch(checkoutCart());
-    //               navigate("/purchase");
-    //               // console.log("Axios post done from Checkout");
-    //             }
-    //           });
-    //       }else {
-    //         alert("You don't have any delivery address... Edit in your profile");
-    //       }
-    //     });
-    // } else {
-    //   alert("Your cart is empty...");
-    // }
+    
   };
-//   console.log(cartReduxData.addedItems);
-//   let addItems =
-//   cartReduxData.addedItems.length !== 0 ? (
-//     cartReduxData.addedItems.map((item) => {
-//         return (
-//           <li className="items odd">
-//             <div className="infoWrap">
-//               <div className="cartSection">
-//                 <p className="itemNumber">{item._id}</p>
-//                 <h3>{item.ITEM_NAME}</h3>
-//                 <img style={{  height: 250 }} src={`${backend}/images/${item.ITEM_IMAGE}`} alt={item.ITEM_NAME} className="" />
-//                 <p>
-//                   {" "}
-//                   <input
-//                     type="text"
-//                     className="qty"
-//                     placeholder={item.quantityInCart}
-//                     readOnly
-//                   />{" "}
-//                   {/* x {currencySymbol} */}
-//                    {item.PRICE}
-//                 </p>
-//               </div>
+  const handleAddQuantity = (item) => {
+    //   dispatch(addQuantity(item._id))
+  }
 
-//               <div className="prodTotal cartSection">
-//                 <p>
-//                   {/* {currencySymbol} */}
-//                   {item.quantityInCart * item.PRICE}
-//                 </p>
-//               </div>
-//             </div>
-//           </li>
-//         );
-//       })
-//     ) : (
-//       <h2>OOPS!...Nothing In Cart</h2>
-//     );
 let cartItems = cartReduxData.addedItems.map((item) => {
     return (
       <tr>
@@ -124,9 +61,9 @@ let cartItems = cartReduxData.addedItems.map((item) => {
         </td>
         <td className="text-center">
         <div className="d-flex justify-content-center">
-            <div className="p-2"><AddCircleIcon onClick={()=> console.log(item)}/></div>
+            <div className="p-2"><AddCircleIcon onClick={() => dispatch(addQuantity(item._id))}/></div>
             <div className="p-2">{item.quantityInCart}</div>
-            <div className="p-2"><RemoveCircleIcon /></div>
+            <div className="p-2"><RemoveCircleIcon onClick={() => dispatch(subtractQuantity(item._id))}/></div>
         </div>
         </td>
         <td className="text-center">{item.PRICE}</td>
@@ -178,7 +115,8 @@ let cartItems = cartReduxData.addedItems.map((item) => {
                   </Col>
                   <Col>
                   {/* {currencySymbol} */}
-                  {cartReduxData.total.toFixed(2)}
+                  {cartReduxData.total}
+                  {/* {cartReduxData.total.toFixed(2)} */}
                   </Col>
               </Row>
               
