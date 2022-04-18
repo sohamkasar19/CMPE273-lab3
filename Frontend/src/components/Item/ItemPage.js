@@ -12,6 +12,7 @@ import { getItemData } from "../../service/itemService";
 import { fetchShopData } from "../../service/shopService";
 import { backend } from "../../config/backend";
 import { addToCart } from "../../store/actions/userActions";
+import { Form } from "react-bootstrap";
 // import Favourite from "";
 
 const ItemPage = () => {
@@ -24,6 +25,8 @@ const ItemPage = () => {
 //   const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
   const [itemCount, setItemCount] = useState(1);
   const [shopDetails, setShopDetails] = useState("");
+  const [giftWrapFlag, setGiftWrapFlag] = useState(false)
+  const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
 
@@ -59,6 +62,10 @@ const ItemPage = () => {
 //     currencySymbol = <CurrencyRupeeIcon />;
 //   }
 
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+  }
+
   const handleAddToCart = (event) => {
     if (itemCount > itemDetails.QUANTITY_AVAILABLE) {
       alert("Oops!!! We don't have that much item in stock. Try Again Later!");
@@ -66,7 +73,9 @@ const ItemPage = () => {
       alert("Added to Cart");
       let addToCartData = {
         item: itemDetails,
-        quantity: itemCount
+        quantity: itemCount,
+        hasGiftWrap: giftWrapFlag,
+        message: message
       }
       dispatch(addToCart(addToCartData));
     }
@@ -89,7 +98,7 @@ const ItemPage = () => {
 
   let AddToCartButton = (
     <>
-      <label for="quantity">Quantity: </label>
+      <label htmlFor="quantity">Quantity: </label>
       <input
         type="number"
         id="quantity"
@@ -101,7 +110,7 @@ const ItemPage = () => {
       <br />
       <br />
       <Button
-        sx={{ backgroundColor: "black", color: "white" }}
+        sx={{ backgroundColor: "black", color: "white"}}
         onClick={handleAddToCart}
       >
         {" "}
@@ -185,6 +194,24 @@ const ItemPage = () => {
                       </var>{" "}
                       <br />
                     </div>
+                    <div className="mb-3">
+                      <Form.Check 
+                        type="checkbox"
+                        id="gift"
+                        label="Gift Wrap"
+                        checked={giftWrapFlag}
+                        onChange={() => setGiftWrapFlag(!giftWrapFlag)}
+                      />
+                    </div>
+                    {giftWrapFlag && 
+                    <div className="mb-3">
+                      <Form>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                          <Form.Label>Message</Form.Label>
+                          <Form.Control as="textarea" rows={2} value={message} onChange={handleMessageChange} />
+                        </Form.Group>
+                      </Form>
+                    </div> }
 
                     <div className="mb-4">
                       {/* <button

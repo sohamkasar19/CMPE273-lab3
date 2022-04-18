@@ -20,6 +20,9 @@ const cartReducer = (state = initState, action) => {
       let itemPrice = Number(itemToAdd.PRICE);
       let quantity = Number(action.payload.quantity);
       let totalItemPrice = itemPrice * quantity;
+      itemToAdd.hasGiftWrap = action.payload.hasGiftWrap
+      itemToAdd.message = action.payload.message
+      console.log(itemToAdd);
       if (existing_item) {
         itemToAdd.quantityInCart += quantity;
         // state.addedItems.push(itemToAdd);
@@ -41,7 +44,7 @@ const cartReducer = (state = initState, action) => {
     }
 
     else if(action.type === CHECKOUT_CART) {
-
+      return initState;
     }
 
     else if(action.type === REMOVE_ITEM) {
