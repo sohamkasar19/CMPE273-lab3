@@ -22,6 +22,9 @@ function NavBar() {
   const { userReducer } = useSelector((state) => state);
   const userReduxData = userReducer.userReducer;
 
+  const signedInFlag = Object.keys(userReduxData).length === 0;
+  
+
   let LoginSignupButton = (
     <Nav.Link className="border-left pl-2 ms-auto" href="">
       <LoginSignup />
@@ -195,12 +198,12 @@ function NavBar() {
                 </Button>
               </Form>
 
-              {!userReduxData && LoginSignupButton}
-              {userReduxData && LoginLogOutDropDown}
-              {userReduxData && ShopButton}
-              {userReduxData && Favourite}
+              {signedInFlag && LoginSignupButton}
+              {!signedInFlag && LoginLogOutDropDown}
+              {!signedInFlag && ShopButton}
+              {!signedInFlag && Favourite}
               &nbsp;&nbsp;&nbsp;
-              {userReduxData && CartButton}
+              {!signedInFlag && CartButton}
             </Nav>
           </Navbar.Collapse>
         </Container>
