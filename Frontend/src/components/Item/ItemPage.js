@@ -1,7 +1,6 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useLocation, useNavigate } from "react-router";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
 import EuroIcon from "@mui/icons-material/Euro";
@@ -9,62 +8,59 @@ import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { Button, ImageListItem, ImageListItemBar } from "@mui/material";
 import { getItemData } from "../../service/itemService";
-import { fetchShopData } from "../../service/shopService";
 import { backend } from "../../config/backend";
 import { addToCart } from "../../store/actions/userActions";
 import { Form } from "react-bootstrap";
-// import Favourite from "";
 
 const ItemPage = () => {
-  // let resObj = {};
   const { state } = useLocation();
-  console.log(state);
+
   let navigate = useNavigate();
 
   const [itemDetails, setItemDetails] = useState({});
-//   const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
   const [itemCount, setItemCount] = useState(1);
   const [shopDetails, setShopDetails] = useState("");
-  const [giftWrapFlag, setGiftWrapFlag] = useState(false)
+  const [giftWrapFlag, setGiftWrapFlag] = useState(false);
   const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
 
+  const { currencyReducer } = useSelector((state) => state);
+  const currencyvalue = currencyReducer.currencyReducer.currency;
+
   useEffect(() => {
     let isSubscribed = true;
     const fetchItemData = async () => {
-        getItemData(state)
-        .then ((res) => {
-          if(res.data.status === 'ok') {
-            // setTimeout(() => {
-              setItemDetails(res.data.item[0])
-              setShopDetails(res.data.item[0].SHOP)
-            // });
-          }
-        })
+      getItemData(state).then((res) => {
+        if (res.data.status === "ok") {
+          // setTimeout(() => {
+          setItemDetails(res.data.item[0]);
+          setShopDetails(res.data.item[0].SHOP);
+          // });
+        }
+      });
     };
 
     if (isSubscribed) {
       fetchItemData().catch(console.error);
-    //   setcurrencyValue(reduxState.currency);
     }
     return () => {
       isSubscribed = false;
     };
   }, [state]);
 
-//   let currencySymbol = null;
-//   if (currencyvalue === "USD") {
-//     currencySymbol = <MonetizationOnIcon />;
-//   } else if (currencyvalue === "Euro") {
-//     currencySymbol = <EuroIcon />;
-//   } else if (currencyvalue === "INR") {
-//     currencySymbol = <CurrencyRupeeIcon />;
-//   }
+  let currencySymbol = null;
+  if (currencyvalue === "USD") {
+    currencySymbol = <MonetizationOnIcon />;
+  } else if (currencyvalue === "Euro") {
+    currencySymbol = <EuroIcon />;
+  } else if (currencyvalue === "INR") {
+    currencySymbol = <CurrencyRupeeIcon />;
+  }
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
-  }
+  };
 
   const handleAddToCart = (event) => {
     if (itemCount > itemDetails.QUANTITY_AVAILABLE) {
@@ -75,8 +71,8 @@ const ItemPage = () => {
         item: itemDetails,
         quantity: itemCount,
         hasGiftWrap: giftWrapFlag,
-        message: message
-      }
+        message: message,
+      };
       dispatch(addToCart(addToCartData));
     }
   };
@@ -84,12 +80,7 @@ const ItemPage = () => {
   const handleItemCount = (event) => {
     setItemCount(event.target.value);
   };
-  // let ItemDescription = (
-  //   <>Description goes here</>
-  // )
-  // if(itemDetails.Description.length > 0) {
-  //   <>{itemDetails.Description}</>
-  // }
+
   const handleShopButton = () => {
     navigate("/shop-page", {
       state: shopDetails._id,
@@ -110,7 +101,11 @@ const ItemPage = () => {
       <br />
       <br />
       <Button
-        sx={{ backgroundColor: "black", color: "white"}}
+        sx={{
+          backgroundColor: "black",
+          color: "white",
+          "&:hover": { backgroundColor: "black" },
+        }}
         onClick={handleAddToCart}
       >
         {" "}
@@ -124,7 +119,6 @@ const ItemPage = () => {
   }
   return (
     <div className="App">
-      
       <section className="content-container">
         <div className="container">
           <article className="card">
@@ -134,22 +128,19 @@ const ItemPage = () => {
                   <article className="gallery-wrap">
                     <div className="card img-big-wrap">
                       {" "}
-                      {/* <img
-                        src={itemDetails.ItemImage}
-                        alt={itemDetails.ItemName}
-                      /> */}
                       <ImageListItem key={itemDetails.ItemId}>
                         <img
-                          src={itemDetails.ITEM_IMAGE ? `${backend}/images/${itemDetails.ITEM_IMAGE}` : ''}
+                          src={
+                            itemDetails.ITEM_IMAGE
+                              ? `${backend}/images/${itemDetails.ITEM_IMAGE}`
+                              : ""
+                          }
                           name={itemDetails._id}
                           alt={itemDetails.ITEM_NAME}
                           loading="lazy"
                         />
                         <ImageListItemBar
                           sx={{ backgroundColor: "transparent" }}
-                        //   actionIcon={
-                        //     <Favourite data={itemDetails}></Favourite>
-                        //   }
                           position="top"
                         />
                       </ImageListItem>
@@ -162,24 +153,21 @@ const ItemPage = () => {
                       <div className="d-flex justify-content-start">
                         <div className="d-flex flex-column">
                           <div className="d-flex justify-content-between">
-                            
-                          <h6>Category: {itemDetails.CATEGORY}</h6>{" "}
+                            <h6>Category: {itemDetails.CATEGORY}</h6>{" "}
                           </div>
-                          
+
                           <h2 className="title">{itemDetails.ITEM_NAME}</h2>
                         </div>
                       </div>
                       <div className="d-flex justify-content-end">
-                        {/* <div className="d-flex justify-content-end"> */}
-                          <Button
-                            sx={{ color: "black", textAlign: "center" }}
-                            style={{ maxHeight: '45px'}}
-                            variant="outlined"
-                            onClick={handleShopButton}
-                          >
-                            <h6>Shop: {shopDetails.SHOP_NAME}</h6>
-                          </Button>
-                        {/* </div> */}
+                        <Button
+                          sx={{ color: "black", textAlign: "center" }}
+                          style={{ maxHeight: "45px" }}
+                          variant="outlined"
+                          onClick={handleShopButton}
+                        >
+                          <h6>Shop: {shopDetails.SHOP_NAME}</h6>
+                        </Button>
                       </div>
                     </div>
                     <hr />
@@ -193,13 +181,13 @@ const ItemPage = () => {
 
                     <div className="mb-3">
                       <var className="price h4">
-                        {/* {currencySymbol}  */}
+                        {currencySymbol} {"  "}
                         {itemDetails.PRICE}
                       </var>{" "}
                       <br />
                     </div>
                     <div className="mb-3">
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="gift"
                         label="Gift Wrap"
@@ -207,30 +195,26 @@ const ItemPage = () => {
                         onChange={() => setGiftWrapFlag(!giftWrapFlag)}
                       />
                     </div>
-                    {giftWrapFlag && 
-                    <div className="mb-3">
-                      <Form>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                          <Form.Label>Message</Form.Label>
-                          <Form.Control as="textarea" rows={2} value={message} onChange={handleMessageChange} />
-                        </Form.Group>
-                      </Form>
-                    </div> }
+                    {giftWrapFlag && (
+                      <div className="mb-3">
+                        <Form>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="exampleForm.ControlTextarea1"
+                          >
+                            <Form.Label>Message</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={2}
+                              value={message}
+                              onChange={handleMessageChange}
+                            />
+                          </Form.Group>
+                        </Form>
+                      </div>
+                    )}
 
                     <div className="mb-4">
-                      {/* <button
-                        onClick={handleAddToCart}
-                        className="btn btn-primary mr-1"
-                      >
-                        Add to cart
-                      </button> */}
-                      {/* <Button
-                        sx={{ backgroundColor: "black", color: "white" }}
-                        onClick={handleAddToCart}
-                      >
-                        {" "}
-                        Add to cart
-                      </Button> */}
                       {AddToCartButton}
                       &nbsp;&nbsp;&nbsp; {itemDetails.QUANTITY_SOLD} sales
                     </div>
@@ -241,16 +225,8 @@ const ItemPage = () => {
           </article>
         </div>
       </section>
-
-     
     </div>
   );
 };
-
-// const mapDispatchToProps = (dispatch) => ({
-//   markComplete: (itemDetails, itemCount) => {
-//     dispatch(addToCart(itemDetails, itemCount));
-//   },
-// });
 
 export default ItemPage;

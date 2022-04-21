@@ -6,7 +6,9 @@ import { changeCurrency } from "../../store/actions/userActions";
 
 const CurrencyForm = (props) => {
 
-  const reduxState = useSelector((state) => state);
+  const { currencyReducer } = useSelector((state) => state);
+  const currencyReduxData = currencyReducer.currencyReducer;
+  console.log(currencyReduxData.currency);
   const dispatch = useDispatch();
 
   const options = [
@@ -14,7 +16,7 @@ const CurrencyForm = (props) => {
     { value: "Euro", label: "Euro" },
     { value: "INR", label: "INR" },
   ];
-  const [formValue, setformValue] = React.useState(reduxState.currency);
+  const [formValue, setformValue] = React.useState(currencyReduxData.currency);
 
   
   const handleChange = (event) => {
@@ -30,7 +32,6 @@ const CurrencyForm = (props) => {
 
   return (
     <Form>
-      
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Currency</Form.Label>
         <Select

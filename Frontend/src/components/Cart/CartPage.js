@@ -25,9 +25,12 @@ const CartPage = () => {
 
   //   const cartDetails = useSelector((state) => state);
 
-  const { userReducer, cartReducer } = useSelector((state) => state);
+  const { userReducer, cartReducer, currencyReducer } = useSelector(
+    (state) => state
+  );
   const cartReduxData = cartReducer.cartReducer;
   const userReduxData = userReducer.userReducer;
+  const currencyvalue = currencyReducer.currencyReducer.currency;
 
   //   const reduxState = useSelector((state) => state);
   //   const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
@@ -37,22 +40,22 @@ const CartPage = () => {
   //     // setcurrencyValue(reduxState.currency);
   //   }, [navigate]);
 
-  //   let currencySymbol = null;
-  //   if (currencyvalue === "USD") {
-  //     currencySymbol = <MonetizationOnIcon />;
-  //   } else if (currencyvalue === "Euro") {
-  //     currencySymbol = <EuroIcon />;
-  //   } else if (currencyvalue === "INR") {
-  //     currencySymbol = <CurrencyRupeeIcon />;
-  //   }
+  let currencySymbol = null;
+  if (currencyvalue === "USD") {
+    currencySymbol = <MonetizationOnIcon />;
+  } else if (currencyvalue === "Euro") {
+    currencySymbol = <EuroIcon />;
+  } else if (currencyvalue === "INR") {
+    currencySymbol = <CurrencyRupeeIcon />;
+  }
 
   // console.log(cartDetails);
   const handleCheckout = (e) => {
     var checkoutData = {
       userId: userReduxData._id,
-      cartData: cartReduxData
-    }
-    dispatch(checkout(checkoutData))
+      cartData: cartReduxData,
+    };
+    dispatch(checkout(checkoutData));
   };
   const handleAddQuantity = (item) => {
     //   dispatch(addQuantity(item._id))
@@ -120,10 +123,11 @@ const CartPage = () => {
     return (
       <div>
         <Container>
-          <br/><br/>
+          <br />
+          <br />
           <Row>
-          <Col md={{ span: 3, offset: 3 }}>
-            <h3>Nothing in cart</h3>
+            <Col md={{ span: 3, offset: 3 }}>
+              <h3>Nothing in cart</h3>
             </Col>
           </Row>
         </Container>
@@ -151,9 +155,9 @@ const CartPage = () => {
                     </Col>
                     <Col>
                       <br />
-                      {/* {currencySymbol} */}
-                      {cartReduxData.total}
-                      {/* {cartReduxData.total.toFixed(2)} */}
+                      {currencySymbol}
+                      {/* {cartReduxData.total} */}
+                      {cartReduxData.total.toFixed(2)}
                     </Col>
                   </Row>
 
