@@ -91,9 +91,9 @@ const ItemPage = () => {
   //   <>{itemDetails.Description}</>
   // }
   const handleShopButton = () => {
-    // navigate("/your-shop", {
-    //   state: shopName,
-    // });
+    navigate("/shop-page", {
+      state: shopDetails._id,
+    });
   };
 
   let AddToCartButton = (
@@ -161,21 +161,25 @@ const ItemPage = () => {
                     <div className="d-flex justify-content-between">
                       <div className="d-flex justify-content-start">
                         <div className="d-flex flex-column">
-                          <div className="d-flex justify-content-between"></div>
+                          <div className="d-flex justify-content-between">
+                            
                           <h6>Category: {itemDetails.CATEGORY}</h6>{" "}
+                          </div>
+                          
                           <h2 className="title">{itemDetails.ITEM_NAME}</h2>
                         </div>
                       </div>
                       <div className="d-flex justify-content-end">
-                        <div className="d-flex justify-content-end">
+                        {/* <div className="d-flex justify-content-end"> */}
                           <Button
-                            sx={{ color: "black" }}
-                            variant="text"
+                            sx={{ color: "black", textAlign: "center" }}
+                            style={{ maxHeight: '45px'}}
+                            variant="outlined"
                             onClick={handleShopButton}
                           >
                             <h6>Shop: {shopDetails.SHOP_NAME}</h6>
                           </Button>
-                        </div>
+                        {/* </div> */}
                       </div>
                     </div>
                     <hr />
