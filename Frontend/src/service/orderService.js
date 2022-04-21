@@ -19,3 +19,8 @@ export const checkout = (data) => {
         }
       });
 };
+
+export const getOrderHistory = (data) => {
+  const params = new URLSearchParams([['userId', data]]);
+  return axios.get(`${backend}/order/get`, {params}, { headers: headers })
+}

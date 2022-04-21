@@ -12,6 +12,7 @@ import ShopName from './components/Shop/ShopName';
 import ShopPage from './components/Shop/ShopPage';
 import ItemPage from './components/Item/ItemPage';
 import CartPage from './components/Cart/CartPage';
+import OrderHistory from './components/OrderHistory/OrderHistory';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/shop-page" element={<ShopPage />} />
           <Route path="/item" element={<ItemPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/order-history" element={<OrderHistory />} />
           {/* 
           
           <Route path="/cart" element={<Cart />} />
