@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const User = require("../models/User");
+const Item = require("../models/Item");
 
 exports.order_add = (req, res) => {
   const { userId, cartData } = req.body.data;
@@ -7,6 +8,18 @@ exports.order_add = (req, res) => {
   var datetime = new Date();
   console.log(datetime.toISOString().slice(0, 10));
   const orderItems = addedItems.map((item) => {
+    Item.findOne({
+      _id : item._id
+    })
+    .then(item_ => {
+      item_.QUANTITY_AVAILABLE -= item.quantityInCart
+      item_.QUANTITY_SOLD += item.quantityInCart
+      item_.save((error) => {
+        if (error) {
+          throw error;
+        }
+      });
+    })
     let newItem = {
       ORDER_ITEM: item._id,
       BUY_PRICE: item.PRICE,
