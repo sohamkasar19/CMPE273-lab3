@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import "./cartPage.css";
-import axios from "axios";
 import { useNavigate } from "react-router";
-// import { checkoutCart } from "../actions/cartActions";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -23,22 +20,12 @@ const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //   const cartDetails = useSelector((state) => state);
-
   const { userReducer, cartReducer, currencyReducer } = useSelector(
     (state) => state
   );
   const cartReduxData = cartReducer.cartReducer;
   const userReduxData = userReducer.userReducer;
   const currencyvalue = currencyReducer.currencyReducer.currency;
-
-  //   const reduxState = useSelector((state) => state);
-  //   const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
-
-  //   useEffect(() => {
-
-  //     // setcurrencyValue(reduxState.currency);
-  //   }, [navigate]);
 
   let currencySymbol = null;
   if (currencyvalue === "USD") {
@@ -56,10 +43,9 @@ const CartPage = () => {
       cartData: cartReduxData,
     };
     dispatch(checkout(checkoutData));
+    navigate('/order-history')
   };
-  const handleAddQuantity = (item) => {
-    //   dispatch(addQuantity(item._id))
-  };
+  
 
   let cartItems = cartReduxData.addedItems.map((item) => {
     return (
