@@ -1,20 +1,8 @@
 // import { ATLAS_URI } from "./config";
 const Item = require("../models/Item");
 const Shop = require("../models/Shop");
-var mongoose = require("mongoose");
-const ATLAS_URI = "mongodb+srv://dbuser:dbpassword@etsy-cluster.l1wsv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
-mongoose.connect(ATLAS_URI, { useNewUrlParser: true });
-
-
-
-function handle_request(msg, callback)  {
-  console.log("Inside book kafka backend", msg);
-  // console.log(msg);
-
-  // books.push(msg);
-  // callback(null, books);
-  // console.log("after callback");
+exports.add_item = (msg, callback) =>  {
   const {
     ItemName,
     ShopId,
@@ -24,6 +12,7 @@ function handle_request(msg, callback)  {
     Description,
     ItemImage,
   } = msg.data;
+  // console.log(req.body.data);
   const newItem = new Item({
     ITEM_NAME: ItemName,
     SHOP: ShopId,
@@ -44,15 +33,44 @@ function handle_request(msg, callback)  {
         .then((shop) => {
           shop.SHOP_ITEMS.push(newItem);
           shop.save();
-          console.log(shop);
-          callback(null, newItem);
-        })
-        .catch((error) => {
-          callback(error, null);
+          callback(null, newItem)
         })
     )
     .catch((error) => {
-      callback(error, null);
+      callback(error, null)
     });
+  
 };
-exports.handle_request = handle_request;
+
+exports.edit_item = (msg, callback) => {
+  const {
+    ItemName,
+    ItemId,
+    ShopId,
+    Category,
+    QuantityAvailable,
+    Price,
+    Description,
+    ItemImage,
+  } = msg.data;
+  Item.findOne({
+    _id: ItemId,
+  })
+    .then((item) => {
+      item.ITEM_NAME = ItemName;
+      item.CATEGORY = Category;
+      item.QUANTITY_AVAILABLE = QuantityAvailable;
+      item.PRICE = Price;
+      item.DESCRIPTION = Description;
+      if (ItemImage) item.ITEM_IMAGE = ItemImage;
+      item.save((error) => {
+        if (error) {
+          throw error;
+        }
+      });
+      callback(null, item)
+    })
+    .catch((err) => {
+      callback(err, null)
+    });
+}
