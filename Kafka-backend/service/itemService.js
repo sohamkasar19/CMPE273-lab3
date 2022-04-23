@@ -2,7 +2,27 @@
 const Item = require("../models/Item");
 const Shop = require("../models/Shop");
 
-exports.add_item = (msg, callback) =>  {
+exports.item_functions = (msg, action, callback) => {
+  switch (action) {
+    case "ADD":
+      add_item(msg, callback);
+      break;
+    case "EDIT":
+      edit_item(msg, callback);
+      break;
+    case "GET_ALL":
+      get_all_items(msg, callback);
+      break;
+    case "GET_ITEM_BY_ID":
+      get_item_by_id(msg, callback)
+      break
+    default:
+      console.log("wrong action in item");
+      break;
+  }
+};
+
+const add_item = (msg, callback) => {
   const {
     ItemName,
     ShopId,
@@ -33,16 +53,15 @@ exports.add_item = (msg, callback) =>  {
         .then((shop) => {
           shop.SHOP_ITEMS.push(newItem);
           shop.save();
-          callback(null, newItem)
+          callback(null, newItem);
         })
     )
     .catch((error) => {
-      callback(error, null)
+      callback(error, null);
     });
-  
 };
 
-exports.edit_item = (msg, callback) => {
+const edit_item = (msg, callback) => {
   const {
     ItemName,
     ItemId,
@@ -68,9 +87,34 @@ exports.edit_item = (msg, callback) => {
           throw error;
         }
       });
-      callback(null, item)
+      callback(null, item);
     })
     .catch((err) => {
-      callback(err, null)
+      callback(err, null);
+    });
+};
+
+const get_all_items = (msg, callback) => {
+  Item.find({}, function (err, result) {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, result);
+    }
+  });
+};
+
+const get_item_by_id = (msg, callback) => {
+  const itemId = msg.itemId;
+  Item.find({
+    _id: itemId,
+  })
+    .populate("SHOP")
+    .exec()
+    .then((item) => {
+      callback(null, item);
+    })
+    .catch((error) => {
+      callback(error, null);
     });
 }
