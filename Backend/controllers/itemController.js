@@ -3,7 +3,7 @@ const Shop = require("../models/Shop");
 var kafka = require("../kafka/client");
 
 exports.item_add_new = async (req, res) => {
-  kafka.make_request("add-item", req.body, function (err, results) {
+  kafka.make_request("item-topic", "ADD",  req.body, function (err, results) {
     console.log("in result");
     console.log(results);
     if (err) {
@@ -62,7 +62,7 @@ exports.item_edit = async (req, res) => {
   //       message: "error while updating item",
   //     });
   //   });
-  kafka.make_request("edit-item", req.body, function (err, results) {
+  kafka.make_request("item-topic", "EDIT", req.body, function (err, results) {
     console.log("in result");
     console.log(results);
     if (err) {
@@ -90,9 +90,7 @@ exports.item_all = async (req, res) => {
   //     res.json(result);
   //   }
   // });
-  kafka.make_request("edit-item", req.body, function (err, results) {
-    console.log("in result");
-    console.log(results);
+  kafka.make_request("item-topic", "GET_ALL", req.body, function (err, results) {
     if (err) {
       console.log("Inside err");
       res.json({
@@ -101,23 +99,36 @@ exports.item_all = async (req, res) => {
       });
     } else {
       console.log("Inside else");
-      res.json(result);
+      res.json(results);
       res.end();
     }
   });
 };
 
 exports.item_details_by_id = async (req, res) => {
-  const itemId = req.query.itemId;
-  Item.find({
-    _id: itemId,
-  })
-    .populate("SHOP")
-    .exec()
-    .then((item) => {
-      res.json({ status: "ok", item: item });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  // const itemId = req.query.itemId;
+  // Item.find({
+  //   _id: itemId,
+  // })
+  //   .populate("SHOP")
+  //   .exec()
+  //   .then((item) => {
+  //     res.json({ status: "ok", item: item });
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+  kafka.make_request("item-topic", "GET_ITEM_BY_ID", req.query, function (err, results) {
+    if (err) {
+      console.log("Inside err");
+      res.json({
+        status: "error",
+        msg: "System Error, Try Again.",
+      });
+    } else {
+      console.log("Inside else");
+      res.json({ status: "ok", item: results });
+      res.end();
+    }
+  });
 };

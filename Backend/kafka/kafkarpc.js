@@ -14,7 +14,7 @@ function KafkaRPC() {
   this.producer = this.connection.getProducer();
 }
 
-KafkaRPC.prototype.makeRequest = function (topic_name, content, callback) {
+KafkaRPC.prototype.makeRequest = function (topic_name, action, content, callback) {
   self = this;
   //generate a unique correlation id for this call
   var correlationId = crypto.randomBytes(16).toString("hex");
@@ -53,6 +53,7 @@ KafkaRPC.prototype.makeRequest = function (topic_name, content, callback) {
         messages: JSON.stringify({
           correlationId: correlationId,
           replyTo: "response-topic",
+          action: action,
           data: content
         }),
         partition: 0
