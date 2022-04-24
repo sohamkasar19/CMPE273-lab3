@@ -28,3 +28,8 @@ export const getItemData = (data) => {
   const params = new URLSearchParams([['itemId', data]]);
   return axios.get(`${backend}/item/details`, {params});
 };
+
+export const getSearchResults = (data) => {
+  const params = new URLSearchParams([['searchWord', data]]);
+  return axios.get(`${backend}/item/search`, {params});
+};
