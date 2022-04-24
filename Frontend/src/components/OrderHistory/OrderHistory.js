@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { backend } from "../../config/backend";
 import { getOrderHistory } from "../../service/orderService";
@@ -16,25 +17,30 @@ function OrderHistory() {
     const fetchOrderHistory = () => {
       getOrderHistory(userReduxData._id).then((res) => {
         // setOrderList(res.data.ORDER_HISTORY);
-        console.log(res.data.ORDER_HISTORY);
-        let orderListRes = res.data.ORDER_HISTORY.map( order => {
-          let orderList_res = order.ORDER_ITEMS.map(orderItem => {
+        console.log("orders", res.data.ORDER_HISTORY);
+        let orderListRes = res.data.ORDER_HISTORY.map((order) => {
+          // console.log(order);
+          let orderList_res = order.ORDER_ITEMS.map((orderItem) => {
             let newOrderItem = {
-              _id : order._id.substring(14),
-              ITEM_NAME : orderItem.ORDER_ITEM.ITEM_NAME,
-              ITEM_IMAGE : `${backend}/images/${orderItem.ORDER_ITEM.ITEM_IMAGE}`,
-              ORDER_DATE : order.ORDER_DATE,
-              BUY_PRICE : orderItem.BUY_PRICE,
-              QUANTITY : orderItem.QUANTITY,
-              TOTAL_PRICE : 0
-            }
-            return newOrderItem
-          })
-          return  orderList_res
-        })
-        let orderListRes_flattened_sorted = orderListRes.flat().sort((a, b) => (a.ORDER_DATE > b.ORDER_DATE) ? -1 : 1)
+              _id: order._id.substring(14),
+              ITEM_NAME: orderItem.ORDER_ITEM.ITEM_NAME,
+              ITEM_IMAGE: `${backend}/images/${orderItem.ORDER_ITEM.ITEM_IMAGE}`,
+              ORDER_DATE: order.ORDER_DATE,
+              BUY_PRICE: orderItem.BUY_PRICE,
+              QUANTITY: orderItem.QUANTITY,
+              GIFT_WRAP: orderItem.GIFT_WRAP,
+              MESSAGE: orderItem.MESSAGE,
+              TOTAL_PRICE: orderItem.BUY_PRICE * orderItem.QUANTITY,
+            };
+            return newOrderItem;
+          });
+          return orderList_res;
+        });
+        let orderListRes_flattened_sorted = orderListRes
+          .flat()
+          .sort((a, b) => (a.ORDER_DATE < b.ORDER_DATE) ? 1 : ((a.ORDER_DATE > b.ORDER_DATE) ? -1 : 0));
         console.log(orderListRes_flattened_sorted);
-        setOrderList(orderListRes.flat());
+        setOrderList(orderListRes_flattened_sorted);
       });
     };
     if (isSubscribed) {
@@ -45,22 +51,27 @@ function OrderHistory() {
     };
   }, [userReduxData._id]);
 
- 
-  
-
   // We'll start our table without any data
-
-
-  
-  return (
-  //  <Styles>
-      <OrderTable
-        
-        data={orderList}
-        
-      />
-    // </Styles>
-  )
+  if (orderList.length === 0) {
+    return (
+      <div>
+        <Container>
+          <br />
+          <br />
+          <Row>
+            <Col md={{ span: 3, offset: 3 }}>
+              <h3>No Orders yet</h3>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    );
+  } else
+    return (
+      //  <Styles>
+      <OrderTable data={orderList} />
+      // </Styles>
+    );
 }
 
 export default OrderHistory;

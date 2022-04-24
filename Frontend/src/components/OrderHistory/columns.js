@@ -20,8 +20,27 @@ export const COLUMNS = [
           )
     },
     {
+        Header: 'Gift Wrap',
+        accessor: 'GIFT_WRAP',
+        Cell: tableProps => (
+          <>
+            <div>
+              {tableProps.row.original.GIFT_WRAP ? "Yes" : "No"}
+            </div>
+            <div>
+              {tableProps.row.original.MESSAGE ? "Note: "+ tableProps.row.original.MESSAGE : ""}
+            </div>
+            </>
+          )
+    },
+    {
         Header: 'Date',
-        accessor: 'ORDER_DATE'
+        accessor: 'ORDER_DATE',
+        Cell: tableProps => (
+          <>
+            {tableProps.row.original.ORDER_DATE.slice(0,10)}
+            </>
+          )
     },
     {
         Header: 'Price',
