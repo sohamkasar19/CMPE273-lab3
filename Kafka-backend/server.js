@@ -8,6 +8,9 @@ mongoose.connect(ATLAS_URI, { useNewUrlParser: true });
 //topics files
 //var signin = require('./services/signin.js');
 var itemService = require('./service/itemService.js')
+var orderService = require('./service/orderService.js')
+var shopService = require('./service/shopService.js')
+var userService = require('./service/userService.js')
 
 function handleTopicRequest(topic_name,handle_request){
     //var topic_name = 'root_topic';
@@ -20,7 +23,6 @@ function handleTopicRequest(topic_name,handle_request){
         var data = JSON.parse(message.value);
         
         handle_request(data.data, data.action, function(err,res){
-            console.log('after handle'+res);
             var payloads = [
                 { topic: data.replyTo,
                     messages:JSON.stringify({
@@ -45,4 +47,7 @@ function handleTopicRequest(topic_name,handle_request){
 // handleTopicRequest("add-item", itemController.add_item)
 // handleTopicRequest("edit-item", itemController.edit_item)
 handleTopicRequest("item-topic", itemService.item_functions)
+handleTopicRequest("order-topic", orderService.order_functions)
+handleTopicRequest("shop-topic", shopService.shop_functions)
+handleTopicRequest("user-topic", userService.user_functions)
 // handleTopicRequest("add-item", itemController.add_item)
