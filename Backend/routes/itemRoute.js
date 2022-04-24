@@ -13,4 +13,6 @@ item.get('/all',  itemController.item_all);
 
 item.get('/details',  itemController.item_details_by_id);
 
+item.get('/search',  itemController.item_search);
+
 module.exports = item;
