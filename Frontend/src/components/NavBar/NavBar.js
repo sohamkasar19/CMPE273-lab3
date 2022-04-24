@@ -23,14 +23,13 @@ function NavBar() {
   const userReduxData = userReducer.userReducer;
 
   const signedInFlag = Object.keys(userReduxData).length === 0;
-  
 
-  let LoginSignupButton = (
-    <Nav.Link className="border-left pl-2 ms-auto" href="">
-      <LoginSignup />
-      <Button onClick={() => dispatch(userLogout())}>logout</Button>
-    </Nav.Link>
-  );
+  const [searchEntry, setSearchEntry] = useState("");
+
+  const handleSearchChange = (event) => {
+    console.log(event.target.value);
+    setSearchEntry(event.target.value);
+  };
 
   const handleLogoutClick = () => {
     dispatch(userLogout());
@@ -40,6 +39,22 @@ function NavBar() {
   const handleShopIconClick = () => {
     navigate("/name-your-shop");
   };
+
+  const handleSearchClick = () => {
+    if (searchEntry.length > 0) {
+      setSearchEntry("")
+      navigate("/search", {
+        state: searchEntry,
+      });
+    }
+  };
+
+  let LoginSignupButton = (
+    <Nav.Link className="border-left pl-2 ms-auto" href="">
+      <LoginSignup />
+    </Nav.Link>
+  );
+
   let CartButton = (
     <Nav.Link>
       <svg
@@ -176,13 +191,13 @@ function NavBar() {
                   placeholder="Search"
                   className="form-control-lg me-2"
                   aria-label="Search"
-                  // value={searchEntry}
-                  // onChange={handleSearchChange}
+                  value={searchEntry}
+                  onChange={handleSearchChange}
                 />
                 <Button
                   variant="outline-primary"
                   size="sm"
-                  // onClick={handleSearchClick}
+                  onClick={handleSearchClick}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
