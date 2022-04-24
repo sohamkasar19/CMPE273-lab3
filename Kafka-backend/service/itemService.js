@@ -16,6 +16,9 @@ exports.item_functions = (msg, action, callback) => {
     case "GET_ITEM_BY_ID":
       get_item_by_id(msg, callback)
       break
+    case "SEARCH_ITEM":
+      search_item(msg, callback)
+      break
     default:
       console.log("wrong action in item");
       break;
@@ -117,4 +120,24 @@ const get_item_by_id = (msg, callback) => {
     .catch((error) => {
       callback(error, null);
     });
+}
+
+const search_item =  (msg, callback) => {
+  const searchWord = msg.searchWord;
+  Item.find(
+    { 
+      "ITEM_NAME": 
+      { 
+        "$regex": searchWord, 
+        "$options": "i" 
+      } 
+    },
+    function(err, items) {
+       if(err) {
+         callback(err, null)
+       }
+       else {
+         callback(null, items)
+       }
+    })
 }
