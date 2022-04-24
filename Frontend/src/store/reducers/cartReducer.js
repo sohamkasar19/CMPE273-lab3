@@ -5,6 +5,8 @@ import {
   ADD_QUANTITY,
   REMOVE_ITEM,
   SUB_QUANTITY,
+  ADD_GIFT_WRAP,
+  ADD_MESSAGE,
 } from "../actions/action-types/user-actions";
 
 const initState = {
@@ -20,8 +22,8 @@ const cartReducer = (state = initState, action) => {
       let itemPrice = Number(itemToAdd.PRICE);
       let quantity = Number(action.payload.quantity);
       let totalItemPrice = itemPrice * quantity;
-      itemToAdd.hasGiftWrap = action.payload.hasGiftWrap
-      itemToAdd.message = action.payload.message
+      // itemToAdd.hasGiftWrap = action.payload.hasGiftWrap
+      // itemToAdd.message = action.payload.message
       console.log(itemToAdd);
       if (existing_item) {
         itemToAdd.quantityInCart += quantity;
@@ -95,6 +97,25 @@ const cartReducer = (state = initState, action) => {
                 total: newTotal
             }
         }
+    }
+    else if(action.type === ADD_GIFT_WRAP) {
+      console.log(action.payload);
+      let giftwrapItem = state.addedItems.find(
+        (item) => item._id === action.payload.itemId
+      );
+      giftwrapItem.hasGiftWrap = action.payload.flag
+      return {
+        ...state
+      }
+    }
+    else if(action.type === ADD_MESSAGE) {
+      let giftwrapItem = state.addedItems.find(
+        (item) => item._id === action.payload.itemId
+      );
+      giftwrapItem.message = action.payload.message
+      return {
+        ...state
+      }
     }
     else {
         return state

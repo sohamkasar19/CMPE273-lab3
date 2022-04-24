@@ -1,4 +1,6 @@
 import {
+  ADD_GIFT_WRAP,
+    ADD_MESSAGE,
     ADD_QUANTITY,
   ADD_TO_CART,
   CHANGE_CURRENCY,
@@ -61,4 +63,18 @@ export const addQuantity=(id)=>{
         type: ADD_QUANTITY,
         payload: id
     }
+}
+
+export function addGiftWrap(values) {
+  return {
+    type: ADD_GIFT_WRAP,
+    payload: values,
+  };
+}
+
+export function addMessage(values) {
+  return {
+    type: ADD_MESSAGE,
+    payload: values,
+  };
 }
