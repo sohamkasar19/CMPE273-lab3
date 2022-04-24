@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Heart from "react-animated-heart";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,7 +45,8 @@ function Favourite(props) {
   
 
   const handleClick = () => {
-    const itemData = {
+    if(userReduxData._id) {
+      const itemData = {
         userId : userReduxData._id,
         itemId : props.data._id
       }
@@ -58,30 +58,11 @@ function Favourite(props) {
           setFavourite(true);
           dispatch(addFavourite(itemData))
       }
-    // if (localStorage.getItem("user")) {
-    //   const local = JSON.parse(localStorage.getItem("user"));
-    //   const token = local.token;
-    //   if (isFavourite) {
-    //     setFavourite(false);
-    //     var data = {
-    //       token: token,
-    //       ItemId: props.data.ItemId,
-    //       isDelete: true,
-    //     };
-    //     axios.post(API+"/item/set-remove-favourite", data);
-    //   } else {
-    //     setFavourite(true);
-    //      data = {
-    //       token: token,
-    //       ItemId: props.data.ItemId,
-    //       isDelete: false,
-    //     };
-    //     axios.post(API+"/item/set-remove-favourite", data);
-    //   }
-    // }
-    // else {
-    //   alert("Sign in to Add Favourites");
-    // }
+    }
+    else {
+      alert("Sign in to Add Favourites");
+    }
+    
 
   };
 

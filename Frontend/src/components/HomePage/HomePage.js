@@ -63,7 +63,7 @@ const HomePage = () => {
   }
   let itemImageData = <>Loading Images</>;
   if (itemList) {
-    itemImageData = itemList.map((item) => (
+    itemImageData = itemList.filter(item => item.SHOP !== userReduxData.SHOP).map((item) => (
       <ImageListItem key={item._id}>
         <img
           src={`${backend}/images/${item.ITEM_IMAGE}`}
