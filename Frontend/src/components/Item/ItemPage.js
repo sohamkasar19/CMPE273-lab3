@@ -114,7 +114,7 @@ const ItemPage = () => {
     </>
   );
 
-  if (itemDetails.QuantityAvailable === 0) {
+  if (itemDetails.QUANTITY_AVAILABLE === 0) {
     AddToCartButton = <h4>Item Out Of Stock</h4>;
   }
   return (
