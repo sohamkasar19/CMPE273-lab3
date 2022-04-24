@@ -21,7 +21,7 @@ const ItemPage = () => {
   const [itemCount, setItemCount] = useState(1);
   const [shopDetails, setShopDetails] = useState("");
   const [giftWrapFlag, setGiftWrapFlag] = useState(false);
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
 
@@ -58,9 +58,9 @@ const ItemPage = () => {
     currencySymbol = <CurrencyRupeeIcon />;
   }
 
-  const handleMessageChange = (e) => {
-    setMessage(e.target.value);
-  };
+  // const handleMessageChange = (e) => {
+  //   setMessage(e.target.value);
+  // };
 
   const handleAddToCart = (event) => {
     if (itemCount > itemDetails.QUANTITY_AVAILABLE) {
@@ -70,8 +70,8 @@ const ItemPage = () => {
       let addToCartData = {
         item: itemDetails,
         quantity: itemCount,
-        hasGiftWrap: giftWrapFlag,
-        message: message,
+        // hasGiftWrap: giftWrapFlag,
+        // message: message,
       };
       dispatch(addToCart(addToCartData));
     }
@@ -186,7 +186,7 @@ const ItemPage = () => {
                       </var>{" "}
                       <br />
                     </div>
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                       <Form.Check
                         type="checkbox"
                         id="gift"
@@ -212,7 +212,7 @@ const ItemPage = () => {
                           </Form.Group>
                         </Form>
                       </div>
-                    )}
+                    )} */}
 
                     <div className="mb-4">
                       {AddToCartButton}
