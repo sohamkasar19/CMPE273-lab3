@@ -43,7 +43,9 @@ const CartPage = () => {
       cartData: cartReduxData,
     };
     dispatch(checkout(checkoutData));
-    navigate('/order-history')
+    setTimeout(() => {
+      navigate('/order-history')
+    }, 300);
   };
   
 
