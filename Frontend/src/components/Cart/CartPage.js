@@ -29,8 +29,8 @@ const CartPage = () => {
   const userReduxData = userReducer.userReducer;
   const currencyvalue = currencyReducer.currencyReducer.currency;
 
-  const [giftWrapFlag, setGiftWrapFlag] = useState(false);
-  const [message, setMessage] = useState("");
+  const [giftWrapFlag, setGiftWrapFlag] = useState(new Map());
+  const [message, setMessage] = useState(new Map());
 
   let currencySymbol = null;
   if (currencyvalue === "USD") {
@@ -90,19 +90,21 @@ const CartPage = () => {
             type="checkbox"
             id="gift"
             // label="Gift Wrap"
-            checked={giftWrapFlag}
+            checked={giftWrapFlag.get(item._id)}
             onChange={() => {
               let payloadFlag = {
                 itemId: item._id,
-                flag: !giftWrapFlag
+                flag: !giftWrapFlag.get(item._id)
               }
-              setGiftWrapFlag(!giftWrapFlag)
+              giftWrapFlag.set(item._id, !giftWrapFlag.get(item._id))
+              setGiftWrapFlag(giftWrapFlag)
+              console.log(giftWrapFlag);
               
               dispatch(addGiftWrap(payloadFlag))
             }}
           />
           <div>
-            {giftWrapFlag && (
+            {giftWrapFlag.get(item._id) && (
               <div className="mb-3">
                 <Form>
                   <Form.Group
@@ -114,9 +116,10 @@ const CartPage = () => {
                     // className="w-200"
                       as="textarea"
                       rows={2}
-                      value={message}
+                      value={message.get(item._id)}
                       onChange={(e) => {
-                        setMessage(e.target.value)
+                        message.set(item._id, e.target.value)
+                        setMessage(message)
                         let payloadMessage = {
                           itemId: item._id,
                           message: e.target.value
