@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,6 +13,8 @@ import {
   addQuantity,
   removeItem,
   subtractQuantity,
+  addGiftWrap,
+  addMessage
 } from "../../store/actions/userActions";
 import { checkout } from "../../service/orderService";
 
@@ -26,6 +28,9 @@ const CartPage = () => {
   const cartReduxData = cartReducer.cartReducer;
   const userReduxData = userReducer.userReducer;
   const currencyvalue = currencyReducer.currencyReducer.currency;
+
+  const [giftWrapFlag, setGiftWrapFlag] = useState(false);
+  const [message, setMessage] = useState("");
 
   let currencySymbol = null;
   if (currencyvalue === "USD") {
@@ -47,7 +52,8 @@ const CartPage = () => {
       navigate('/order-history')
     }, 300);
   };
-  
+
+ 
 
   let cartItems = cartReduxData.addedItems.map((item) => {
     return (
@@ -79,7 +85,51 @@ const CartPage = () => {
           </div>
         </td>
         <td className="text-center">{item.PRICE}</td>
-        <td className="text-center">{item.hasGiftWrap ? "Yes" : "No"}</td>
+        <td className="text-center" >
+          <Form.Check
+            type="checkbox"
+            id="gift"
+            // label="Gift Wrap"
+            checked={giftWrapFlag}
+            onChange={() => {
+              let payloadFlag = {
+                itemId: item._id,
+                flag: !giftWrapFlag
+              }
+              setGiftWrapFlag(!giftWrapFlag)
+              
+              dispatch(addGiftWrap(payloadFlag))
+            }}
+          />
+          <div>
+            {giftWrapFlag && (
+              <div className="mb-3">
+                <Form>
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Message</Form.Label>
+                    <Form.Control
+                    // className="w-200"
+                      as="textarea"
+                      rows={2}
+                      value={message}
+                      onChange={(e) => {
+                        setMessage(e.target.value)
+                        let payloadMessage = {
+                          itemId: item._id,
+                          message: e.target.value
+                        }
+                        dispatch(addMessage(payloadMessage))
+                      }}
+                    />
+                  </Form.Group>
+                </Form>
+              </div>
+            )}
+          </div>
+        </td>
         <td className="text-center">{item.quantityInCart * item.PRICE}</td>
         <td className="text-center">
           <DeleteIcon onClick={() => dispatch(removeItem(item._id))} />
@@ -97,7 +147,7 @@ const CartPage = () => {
               <td class="text-center">Item</td>
               <td class="text-center">Quantity</td>
               <td class="text-center">Price</td>
-              <td class="text-center">Gift Package</td>
+              <td class="text-center">Gift Wrap</td>
               <td class="text-center">Total</td>
               <td class="text-center"></td>
             </tr>
@@ -126,14 +176,14 @@ const CartPage = () => {
       <div>
         <Container>
           <Row>
-            <Col xs={12} md={8}>
+            <Col sm={9}>
               <div id="content" className="d-flex justify-content-center">
                 <div className="cart">
                   <ul className="cartWrap">{cartDetails}</ul>
                 </div>
               </div>
             </Col>
-            <Col md={{ span: 2, offset: 1 }}>
+            <Col sm={3}>
               <div className="d-flex justify-content-center">
                 <Col>
                   <Row>
