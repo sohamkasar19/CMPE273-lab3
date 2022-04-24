@@ -1,7 +1,7 @@
 module.exports = {
     PORT : 8080,
     ATLAS_URI : "mongodb+srv://dbuser:dbpassword@etsy-cluster.l1wsv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    FRONTEND : "http://18.212.199.247:3000",
+    FRONTEND : "http://54.234.171.222:3000",
     // FRONTEND : "http://localhost:3000",
     SECRET : "secret",
     AWS_BUCKET_NAME : "etsy-images-bucket",
