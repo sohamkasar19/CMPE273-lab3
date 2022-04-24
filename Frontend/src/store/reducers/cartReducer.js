@@ -46,6 +46,7 @@ const cartReducer = (state = initState, action) => {
     }
 
     else if(action.type === CHECKOUT_CART) {
+      state.addedItems = []
       return {
         addedItems: [],
         total: 0,
