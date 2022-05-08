@@ -5,12 +5,11 @@ const {
   GraphQLSchema,
   GraphQLInt,
   GraphQLString,
-  GraphQLID,
+  GraphQLFloat,
   GraphQLList,
 } = graphql;
 
 var itemController = require("../controllers/itemController");
-
 const Item = require("../models/Item");
 
 const RootQuery = new GraphQLObjectType({
@@ -27,7 +26,77 @@ const RootQuery = new GraphQLObjectType({
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
-  fields: {},
+  fields: {
+    addItem: {
+      type: ItemType,
+      args: {
+        ITEM_NAME: {
+          type: GraphQLString,
+        },
+        SHOP: {
+          type: GraphQLString,
+        },
+        CATEGORY: {
+          type: GraphQLString,
+        },
+        ITEM_IMAGE: {
+          type: GraphQLString,
+        },
+        PRICE: {
+          type: GraphQLFloat,
+        },
+        QUANTITY_AVAILABLE: {
+          type: GraphQLInt,
+        },
+        QUANTITY_SOLD: {
+          type: GraphQLInt,
+        },
+        DESCRIPTION: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        //   console.log(args);
+        return itemController.item_add_new(args);
+      },
+    },
+    editItem: {
+      type: ItemType,
+      args: {
+        _id: {
+          type: GraphQLString,
+        },
+        ITEM_NAME: {
+          type: GraphQLString,
+        },
+        SHOP: {
+          type: GraphQLString,
+        },
+        CATEGORY: {
+          type: GraphQLString,
+        },
+        ITEM_IMAGE: {
+          type: GraphQLString,
+        },
+        PRICE: {
+          type: GraphQLFloat,
+        },
+        QUANTITY_AVAILABLE: {
+          type: GraphQLInt,
+        },
+        QUANTITY_SOLD: {
+          type: GraphQLInt,
+        },
+        DESCRIPTION: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return itemController.item_edit(args);
+      },
+    },
+  },
 });
 
 module.exports = new GraphQLSchema({ query: RootQuery, mutation: Mutation });

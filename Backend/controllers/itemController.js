@@ -1,40 +1,37 @@
 const Item = require("../models/Item");
 const Shop = require("../models/Shop");
 
-exports.item_add_new = async (req, res) => {
+exports.item_add_new = async (args) => {
   const {
-    ItemName,
-    ShopId,
-    Category,
-    QuantityAvailable,
-    Price,
-    Description,
-    ItemImage,
-  } = req.body.data;
+    ITEM_NAME,
+    SHOP,
+    CATEGORY,
+    ITEM_IMAGE,
+    PRICE,
+    QUANTITY_AVAILABLE,
+    DESCRIPTION,
+  } = args;
   const newItem = new Item({
-    ITEM_NAME: ItemName,
-    SHOP: ShopId,
-    CATEGORY: Category,
-    ITEM_IMAGE: ItemImage,
-    PRICE: Price,
-    QUANTITY_AVAILABLE: QuantityAvailable,
+    ITEM_NAME: ITEM_NAME,
+    SHOP: SHOP,
+    CATEGORY: CATEGORY,
+    ITEM_IMAGE: ITEM_IMAGE,
+    PRICE: PRICE,
+    QUANTITY_AVAILABLE: QUANTITY_AVAILABLE,
     QUANTITY_SOLD: 0,
-    DESCRIPTION: Description,
+    DESCRIPTION: DESCRIPTION,
   });
-  newItem
+  return newItem
     .save()
     .then(
       Shop.findOne({
-        _id: ShopId,
+        _id: SHOP,
       })
         .exec()
         .then((shop) => {
           shop.SHOP_ITEMS.push(newItem);
           shop.save();
-          res.json({
-            status: "ok",
-            message: "item added",
-          });
+          return "Done";
         })
         .catch((error) => {
           console.log(error);
@@ -45,37 +42,34 @@ exports.item_add_new = async (req, res) => {
     });
 };
 
-exports.item_edit = async (req, res) => {
+exports.item_edit = (args) => {
   const {
-    ItemName,
-    ItemId,
-    ShopId,
-    Category,
-    QuantityAvailable,
-    Price,
-    Description,
-    ItemImage,
-  } = req.body.data;
+    _id,
+    ITEM_NAME,
+    SHOP,
+    CATEGORY,
+    ITEM_IMAGE,
+    PRICE,
+    QUANTITY_AVAILABLE,
+    DESCRIPTION,
+  } = args;
   // console.log(req.body.data);
-  Item.findOne({
-    _id: ItemId,
+  return Item.findOne({
+    _id: _id,
   })
     .then((item) => {
-      item.ITEM_NAME = ItemName;
-      item.CATEGORY = Category;
-      item.QUANTITY_AVAILABLE = QuantityAvailable;
-      item.PRICE = Price;
-      item.DESCRIPTION = Description;
-      if (ItemImage) item.ITEM_IMAGE = ItemImage;
+      item.ITEM_NAME = ITEM_NAME;
+      item.CATEGORY = CATEGORY;
+      item.QUANTITY_AVAILABLE = QUANTITY_AVAILABLE;
+      item.PRICE = PRICE;
+      item.DESCRIPTION = DESCRIPTION;
+      if (ITEM_IMAGE) item.ITEM_IMAGE = ITEM_IMAGE;
       item.save((error) => {
         if (error) {
           throw error;
         }
       });
-      res.json({
-        status: "ok",
-        item: item,
-      });
+      return item;
     })
     .catch((err) => {
       res.json({

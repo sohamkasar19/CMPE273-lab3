@@ -1,13 +1,18 @@
+import { useMutation } from "@apollo/client";
 import axios from "axios";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { backend } from "../../config/backend";
-import { itemAddNew, itemEdit, itemUploadImage } from "../../service/itemService";
-
+import { EDIT_ITEM } from "../../GraphQL/Mutation";
+import {
+  itemAddNew,
+  itemEdit,
+  itemUploadImage,
+} from "../../service/itemService";
 
 function ShopEditItemForm(props) {
-  
-  
+  const [editItem, { error }] = useMutation(EDIT_ITEM);
+
   let itemSelected = props.item;
   const [itemForm, setItemForm] = useState({
     ItemId: props.item._id,
@@ -19,21 +24,18 @@ function ShopEditItemForm(props) {
     ItemImage: "",
   });
 
-
   const handleChange = async (event) => {
-  
     if (event.target.name === "ItemImage" && event.target.files[0]) {
       var itemPhoto = event.target.files[0];
       var data = new FormData();
       data.append("image", itemPhoto);
-      itemUploadImage(data)
-      .then((res) => {
+      itemUploadImage(data).then((res) => {
         const { data } = res;
         setItemForm({
           ...itemForm,
           ItemImage: data.image.PROFILE_IMAGE,
-        })
-      })
+        });
+      });
     } else {
       setItemForm({
         ...itemForm,
@@ -45,13 +47,25 @@ function ShopEditItemForm(props) {
   const handleItemSubmit = async (e) => {
     e.preventDefault();
     // console.log("asd",itemForm);
-    itemEdit(itemForm);
+    // itemEdit(itemForm);
+    editItem({
+      variables: {
+        _id: itemForm.ItemId,
+        ITEM_NAME: itemForm.ItemName,
+        SHOP: itemForm.ShopId,
+        CATEGORY: itemForm.Category,
+        ITEM_IMAGE: itemForm.ItemImage,
+        PRICE: parseFloat(itemForm.Price),
+        QUANTITY_AVAILABLE: parseInt(itemForm.QuantityAvailable),
+        DESCRIPTION: itemForm.Description,
+      },
+    });
     props.onHide();
     window.location.reload(false);
   };
 
   // let imgURL = `${backend}/images/${itemForm.ItemImage}`;
-  
+
   return (
     <div>
       <Modal
@@ -154,7 +168,6 @@ function ShopEditItemForm(props) {
                 />
               </Col>
             </Form.Group>
-
             <Form.Group as={Row} className="mb-2">
               <Form.Label column sm={4}>
                 Image
@@ -165,10 +178,9 @@ function ShopEditItemForm(props) {
                   type="file"
                   onChange={handleChange}
                 />
-              
               </Col>
             </Form.Group>
-            <br/>
+            <br />
             <Button variant="dark" type="submit" onSubmit={handleItemSubmit}>
               Submit
             </Button>

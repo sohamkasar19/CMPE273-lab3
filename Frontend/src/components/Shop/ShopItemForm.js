@@ -1,13 +1,16 @@
 import axios from "axios";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { backend } from "../../config/backend";
 import { itemAddNew, itemUploadImage } from "../../service/itemService";
-
+import { ADD_ITEM } from "../../GraphQL/Mutation";
+import { useMutation } from "@apollo/client";
 
 function ShopItemForm(props) {
-  
   // console.log(props);
+
+  const [addItem, { error }] = useMutation(ADD_ITEM);
+
   const [itemForm, setItemForm] = useState({
     // ShopId: "",
     ItemName: "",
@@ -18,25 +21,23 @@ function ShopItemForm(props) {
     ItemImage: "",
   });
   const handleChange = async (event) => {
-  
     if (event.target.name === "ItemImage" && event.target.files[0]) {
       var itemPhoto = event.target.files[0];
       var data = new FormData();
       data.append("image", itemPhoto);
-      itemUploadImage(data)
-      .then((res) => {
+      itemUploadImage(data).then((res) => {
         const { data } = res;
         setItemForm({
           ...itemForm,
           ItemImage: data.image.PROFILE_IMAGE,
-          ShopId: props.data.toString()
-        })
-      })
+          ShopId: props.data.toString(),
+        });
+      });
     } else {
       setItemForm({
         ...itemForm,
         [event.target.name]: event.target.value,
-        ShopId: props.data.toString()
+        ShopId: props.data.toString(),
       });
     }
   };
@@ -44,13 +45,26 @@ function ShopItemForm(props) {
   const handleItemSubmit = async (e) => {
     e.preventDefault();
     // console.log(itemForm);
-    itemAddNew(itemForm);
+    // itemAddNew(itemForm);
     // props.onHide();
+
+    addItem({
+      variables: {
+        ITEM_NAME: itemForm.ItemName,
+        SHOP: itemForm.ShopId,
+        CATEGORY: itemForm.Category,
+        ITEM_IMAGE: itemForm.ItemImage,
+        PRICE: parseFloat(itemForm.Price),
+        QUANTITY_AVAILABLE: parseInt(itemForm.QuantityAvailable),
+        DESCRIPTION: itemForm.Description,
+      },
+    });
+
     window.location.reload(false);
   };
 
   // let imgURL = `${backend}/images/${itemForm.ItemImage}`;
-  
+
   return (
     <div>
       <Modal
@@ -153,7 +167,6 @@ function ShopItemForm(props) {
                 />
               </Col>
             </Form.Group>
-
             <Form.Group as={Row} className="mb-2">
               <Form.Label column sm={4}>
                 Image
@@ -165,10 +178,9 @@ function ShopItemForm(props) {
                   onChange={handleChange}
                   required
                 />
-              
               </Col>
             </Form.Group>
-            <br/>
+            <br />
             <Button variant="dark" type="submit" onSubmit={handleItemSubmit}>
               Submit
             </Button>
