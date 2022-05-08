@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { backend } from "../../config/backend";
-import { EDIT_ITEM } from "../../GraphQL/Mutation";
+import { EDIT_ITEM } from "../../GraphQL/Mutations/ItemMutations";
 import {
   itemAddNew,
   itemEdit,

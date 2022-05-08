@@ -11,7 +11,7 @@ import EuroIcon from "@mui/icons-material/Euro";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_ITEMS } from "../../GraphQL/Queries";
+import { GET_ALL_ITEMS } from "../../GraphQL/Queries/ItemQueries";
 
 const HomePage = () => {
   const { userReducer, currencyReducer } = useSelector((state) => state);

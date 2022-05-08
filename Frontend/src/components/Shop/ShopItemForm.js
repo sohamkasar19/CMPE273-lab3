@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { backend } from "../../config/backend";
 import { itemAddNew, itemUploadImage } from "../../service/itemService";
-import { ADD_ITEM } from "../../GraphQL/Mutation";
+import { ADD_ITEM } from "../../GraphQL/Mutations/ItemMutations";
 import { useMutation } from "@apollo/client";
 
 function ShopItemForm(props) {
