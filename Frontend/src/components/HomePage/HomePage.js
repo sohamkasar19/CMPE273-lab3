@@ -10,6 +10,8 @@ import { useNavigate } from "react-router";
 import EuroIcon from "@mui/icons-material/Euro";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_ITEMS } from "../../GraphQL/Queries";
 
 const HomePage = () => {
   const { userReducer, currencyReducer } = useSelector((state) => state);
@@ -19,23 +21,13 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const [itemList, setItemList] = useState([]);
+  const { error, loading, data } = useQuery(GET_ALL_ITEMS);
 
   useEffect(() => {
-    let isSubscribed = true;
-
-    const fetchAllItem = async () => {
-      getAllItems().then((res) => {
-        setItemList(res.data);
-      });
-    };
-    if (isSubscribed) {
-      fetchAllItem().catch(console.error);
+    if (data) {
+      setItemList(data.getAllItem);
     }
-
-    return () => {
-      isSubscribed = false;
-    };
-  }, []);
+  }, [data]);
 
   const imageClickHandler = (e) => {
     navigate("/item", {
@@ -63,26 +55,29 @@ const HomePage = () => {
   }
   let itemImageData = <>Loading Images</>;
   if (itemList) {
-    itemImageData = itemList.filter(item => item.SHOP !== userReduxData.SHOP).map((item) => (
-      <ImageListItem key={item._id}>
-        <img
-          src={`${backend}/images/${item.ITEM_IMAGE}`}
-          name={item._id}
-          alt={item.ITEM_NAME}
-          onClick={imageClickHandler}
-        />
-        <ImageListItemBar
-          sx={{ backgroundColor: "transparent" }}
-          title={
-            <Button style={{ backgroundColor: "black", borderRadius: "40px" }}>
-              {currencySymbol} {' '}
-              {item.PRICE}
-            </Button>
-          }
-          actionIcon={<Favourite data={item}></Favourite>}
-        />
-      </ImageListItem>
-    ));
+    itemImageData = itemList
+      .filter((item) => item.SHOP !== userReduxData.SHOP)
+      .map((item) => (
+        <ImageListItem key={item._id}>
+          <img
+            src={`${backend}/images/${item.ITEM_IMAGE}`}
+            name={item._id}
+            alt={item.ITEM_NAME}
+            onClick={imageClickHandler}
+          />
+          <ImageListItemBar
+            sx={{ backgroundColor: "transparent" }}
+            title={
+              <Button
+                style={{ backgroundColor: "black", borderRadius: "40px" }}
+              >
+                {currencySymbol} {item.PRICE}
+              </Button>
+            }
+            actionIcon={<Favourite data={item}></Favourite>}
+          />
+        </ImageListItem>
+      ));
   }
 
   return (

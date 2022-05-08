@@ -18,12 +18,12 @@ const db = constants.ATLAS_URI;
 const frontEnd = constants.FRONTEND;
 const secret = constants.SECRET;
 
-var userRoute = require("./routes/userRoute.js");
-var shopRoute = require("./routes/shopRoute.js");
-var itemRoute = require("./routes/itemRoute.js");
-var imageUploadRoute = require("./routes/imageUploadRoute.js");
-var orderRoute = require("./routes/orderRoute.js");
-const Item = require("./models/Item");
+var userRoute = require('./routes/userRoute.js');
+var shopRoute = require('./routes/shopRoute.js');
+var itemRoute = require('./routes/itemRoute.js');
+var imageUploadRoute = require('./routes/imageUploadRoute.js');
+var orderRoute = require('./routes/orderRoute.js');
+
 
 //set up cors
 app.use(cors({ origin: frontEnd, credentials: true }));
@@ -69,6 +69,17 @@ mongoose
 app.use(function (err, req, res, next) {
   console.log(err);
 });
+
+//Routes
+app.use('/user', userRoute); 
+
+app.use('/images', imageUploadRoute)
+
+app.use('/shop', shopRoute);
+
+app.use('/item', itemRoute);
+
+app.use('/order', orderRoute);
 
 app.use(
   "/graphql",

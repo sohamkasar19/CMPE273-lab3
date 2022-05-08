@@ -86,13 +86,9 @@ exports.item_edit = async (req, res) => {
     });
 };
 
-exports.item_all = async (req, res) => {
-  Item.find({}, function (err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(result);
-    }
+exports.item_all = (args) => {
+  return Item.find({}).then((res) => {
+    return res;
   });
 };
 

@@ -1,4 +1,5 @@
 const graphql = require("graphql");
+const ItemType = require("./TypeDefs/ItemType");
 const {
   GraphQLObjectType,
   GraphQLSchema,
@@ -8,32 +9,25 @@ const {
   GraphQLList,
 } = graphql;
 
-const TestType = require('./TypeDefs/TestType')
+var itemController = require("../controllers/itemController");
+
+const Item = require("../models/Item");
 
 const RootQuery = new GraphQLObjectType({
-    name: "RootQueryType",
-    fields: {
-      getTest: {
-        type: TestType,
-        resolve(parent, args) {
-          return { message: "Hello" };
-        },
+  name: "RootQueryType",
+  fields: {
+    getAllItem: {
+      type: new GraphQLList(ItemType),
+      resolve(parent, args) {
+        return itemController.item_all(args);
       },
     },
-  });
-  const Mutation = new GraphQLObjectType({
-    name: "Mutation",
-    fields: {
-      addMessage: {
-        type: TestType,
-        args: {
-          message: { type: GraphQLString },
-        },
-        resolve(parent, args) {
-          return args;
-        },
-      },
-    },
-  });
+  },
+});
 
-module.exports =  new GraphQLSchema({ query: RootQuery, mutation: Mutation });
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {},
+});
+
+module.exports = new GraphQLSchema({ query: RootQuery, mutation: Mutation });
