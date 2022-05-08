@@ -21,6 +21,29 @@ const RootQuery = new GraphQLObjectType({
         return itemController.item_all(args);
       },
     },
+    findItem: {
+      type: ItemType,
+      args: {
+        _id: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return itemController.item_details_by_id(args);
+      },
+    },
+    findItemByName: {
+      type: new GraphQLList(ItemType),
+      args: {
+        searchWord: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        return itemController.item_search(args)
+      },
+    },
   },
 });
 

@@ -11,9 +11,16 @@ import { getItemData } from "../../service/itemService";
 import { backend } from "../../config/backend";
 import { addToCart } from "../../store/actions/userActions";
 import { Form } from "react-bootstrap";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_ITEM_BY_ID } from "../../GraphQL/Queries/ItemQueries";
 
 const ItemPage = () => {
   const { state } = useLocation();
+  console.log(state);
+  const { loading, error, data } = useQuery(GET_ITEM_BY_ID, {
+    variables: { _id: state },
+  })
+  // const [findItem, { loading, error, data }] = useLazyQuery(GET_ITEM_BY_ID);
 
   let navigate = useNavigate();
 
@@ -29,25 +36,28 @@ const ItemPage = () => {
   const currencyvalue = currencyReducer.currencyReducer.currency;
 
   useEffect(() => {
-    let isSubscribed = true;
-    const fetchItemData = async () => {
-      getItemData(state).then((res) => {
-        if (res.data.status === "ok") {
-          // setTimeout(() => {
-          setItemDetails(res.data.item[0]);
-          setShopDetails(res.data.item[0].SHOP);
-          // });
-        }
-      });
-    };
+    // let isSubscribed = true;
+    // const fetchItemData = async () => {
+    //   getItemData(state).then((res) => {
+    //     if (res.data.status === "ok") {
+    //       // setTimeout(() => {
+    //       setItemDetails(res.data.item[0]);
+    //       setShopDetails(res.data.item[0].SHOP);
+    //       // });
+    //     }
+    //   });
+    // };
 
-    if (isSubscribed) {
-      fetchItemData().catch(console.error);
+    // if (isSubscribed) {
+    //   fetchItemData().catch(console.error);
+    // }
+    // return () => {
+    //   isSubscribed = false;
+    // };
+    if(data) {
+      setItemDetails(data.findItem)
     }
-    return () => {
-      isSubscribed = false;
-    };
-  }, [state]);
+  }, [data]);
 
   let currencySymbol = null;
   if (currencyvalue === "USD") {
@@ -128,7 +138,7 @@ const ItemPage = () => {
                   <article className="gallery-wrap">
                     <div className="card img-big-wrap">
                       {" "}
-                      <ImageListItem key={itemDetails.ItemId}>
+                      <ImageListItem key={itemDetails._id}>
                         <img
                           src={
                             itemDetails.ITEM_IMAGE

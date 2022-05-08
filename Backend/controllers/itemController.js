@@ -86,36 +86,40 @@ exports.item_all = (args) => {
   });
 };
 
-exports.item_details_by_id = async (req, res) => {
-  const itemId = req.query.itemId;
-  Item.find({
-    _id: itemId,
-  })
-    .populate("SHOP")
-    .exec()
-    .then((item) => {
-      res.json({ status: "ok", item: item });
+exports.item_details_by_id = (args) => {
+  const { _id } = args;
+  console.log(_id, "id");
+  return (
+    Item.findOne({
+      _id: _id,
     })
-    .catch((error) => {
-      console.log(error);
-    });
+      // .populate("SHOP")
+      .exec()
+      .then((item) => {
+        return item;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  );
 };
 
-exports.item_search = async (req, res) => {
-  const searchWord = req.query.searchWord;
-  Item.find(
+exports.item_search = (args) => {
+  const { searchWord } = args;
+  return Item.find(
     {
       ITEM_NAME: {
         $regex: searchWord,
         $options: "i",
       },
-    },
-    function (err, items) {
-      if (err) {
-        res.json({ status: "error" });
-      } else {
-        res.json(items);
-      }
     }
+    // ,
+    // function (err, items) {
+    //   if (err) {
+    //     console.log("error", err);
+    //   } else {
+    //     return items;
+    //   }
+    // }
   );
 };
