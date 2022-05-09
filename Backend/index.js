@@ -8,6 +8,7 @@ require("./utils/passport");
 var session = require("express-session");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schemas");
+const { graphqlUploadExpress } = require("graphql-upload");
 
 var constants = require("./utils/config");
 
@@ -83,6 +84,7 @@ app.use('/order', orderRoute);
 
 app.use(
   "/graphql",
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   graphqlHTTP({
     schema,
     graphiql: true,

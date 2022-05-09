@@ -23,6 +23,7 @@ import {
   from,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { createUploadLink } from "apollo-upload-client";
 
 import { backend } from "./config/backend";
 
@@ -34,9 +35,12 @@ const errorLink = onError(({ graphqlErrors, newtworkErrors }) => {
   }
 });
 
+const uploadLink = new createUploadLink({ uri: "http://localhost:8080/graphql" });
+
 const link = from([
   errorLink,
-  new HttpLink({ uri: "http://localhost:8080/graphql" }),
+  // new HttpLink({ uri: "http://localhost:8080/graphql" }),
+  uploadLink,
 ]);
 
 const client = new ApolloClient({

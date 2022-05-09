@@ -8,12 +8,19 @@ const {
   GraphQLFloat,
   GraphQLList,
   GraphQLBoolean,
+  GraphQLScalarType
 } = graphql;
+const { GraphQLUpload } = require("graphql-upload");
+const {v4: uuid} = require('uuid');
+
 
 var itemController = require("../controllers/itemController");
 var shopController = require("../controllers/shopController");
 const Item = require("../models/Item");
 const ShopType = require("./TypeDefs/ShopType");
+const ImageType = require("./TypeDefs/ImageType");
+const UploadType = require("./TypeDefs/UploadType");
+const { uploadFileNew } = require("../utils/s3");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -171,7 +178,31 @@ const Mutation = new GraphQLObjectType({
         return shopController.shop_add_new(args);
       },
     },
+    uploadImage: {
+      type: GraphQLBoolean,
+      args: {
+        file: {
+          type: GraphQLUpload,
+        },
+      },
+      resolve  (parent, args) {
+        console.log(args.file);
+        
+        imageUpload(args.file);
+        // return shopController.shop_add_new(args);
+      },
+    }
   },
 });
+
+const imageUpload = async(file) => {
+  console.log(file);
+  const {createReadStream, filename} = await file
+
+  let stream = createReadStream();
+  const res = await uploadFileNew(stream, uuid())
+  console.log(res);
+
+}
 
 module.exports = new GraphQLSchema({ query: RootQuery, mutation: Mutation });

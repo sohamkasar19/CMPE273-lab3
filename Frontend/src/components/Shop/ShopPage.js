@@ -10,14 +10,19 @@ import { useLocation, useNavigate } from "react-router";
 // import ShopItemForm from "./ShopItemForm";
 // import ShopImage from "./ShopImage";
 import EditIcon from "@mui/icons-material/Edit";
-import { fetchShopData, shopUploadImage, updateShopData } from "../../service/shopService";
+import {
+  fetchShopData,
+  shopUploadImage,
+  updateShopData,
+} from "../../service/shopService";
 import { useSelector } from "react-redux";
 import ShopItemForm from "./ShopItemForm";
 import { backend } from "../../config/backend";
 import ShopEditItemForm from "./ShopEditItemForm";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SHOP } from "../../GraphQL/Queries/ShopQueries";
 import { GET_ITEM_LIST } from "../../GraphQL/Queries/ItemQueries";
+import { IMAGE_UPLOAD } from "../../GraphQL/Mutations/ImageMutation";
 // import ShopItemFormEdit from "./ShopItemFormEdit";
 
 function ShopPage() {
@@ -26,7 +31,7 @@ function ShopPage() {
 
   const [shopData, setShopData] = useState({});
   const [shopItems, setShopItems] = useState([]);
-  const [isOwner, setIsOwner] = useState(false);
+  const [isOwner, setIsOwner] = useState(true);
   const [ownerData, setOwnerData] = useState({});
   const [showItemForm, setShowItemForm] = useState(false);
   const [showEditItemForm, setShowEditItemForm] = useState(false);
@@ -37,9 +42,15 @@ function ShopPage() {
   const { userReducer } = useSelector((state) => state);
   const userReduxData = userReducer.userReducer;
 
-  const { loading, error, data: shopDetails } = useQuery(GET_SHOP, {
+  const {
+    loading,
+    error,
+    data: shopDetails,
+  } = useQuery(GET_SHOP, {
     variables: { _id: state },
-  })
+  });
+
+  const [uploadImage, { data: imageData }] = useMutation(IMAGE_UPLOAD);
 
   const [findItemList] = useLazyQuery(GET_ITEM_LIST);
 
@@ -62,13 +73,12 @@ function ShopPage() {
     //   let response =  await fetchShopData(shopid);
     //   const { data } = response;
     //   await setShopData(data.shop);
-      
+
     //   // console.log(data.shop);
     // }
 
     // if (isSubscribed) {
-     
-      
+
     //   // fetchShopInfo(temp).catch(console.error());
     //   fetchShopData(state).then(async (res) => {
     //     const { data } = res;
@@ -81,49 +91,60 @@ function ShopPage() {
     //       setIsOwner(true);
     //     }
     //   });
-      
-     
-      
+
     // }
     // return () => {
     //   isSubscribed = false;
     // };
     let isSubscribed = true;
-    const fetchAllDetails = async(shopDetails) => {
-      if(shopDetails) {
-        setShopData(shopDetails.findShop)
-        let {data: itemsData} = await findItemList({ variables: { idList: shopDetails.findShop.SHOP_ITEMS }})
+    const fetchAllDetails = async (shopDetails) => {
+      if (shopDetails) {
+        setShopData(shopDetails.findShop);
+        let { data: itemsData } = await findItemList({
+          variables: { idList: shopDetails.findShop.SHOP_ITEMS },
+        });
         setShopItems(itemsData.findItemList);
-  
       }
-    }
-    if(isSubscribed) {
-      fetchAllDetails(shopDetails)
+    };
+    if (isSubscribed) {
+      fetchAllDetails(shopDetails);
     }
     return () => {
       isSubscribed = false;
     };
-    
-
-
   }, [findItemList, shopDetails]);
+  // function handleImageChange({
+  //   target: {
+  //     validity,
+  //     files: [file],
+  //   },
+  // }) {
+  //   if (validity.valid) uploadImage({  variables: { file: file[0] } });
+  // }
   const handleImageChange = async (event) => {
     var shopPhoto = event.target.files[0];
-      var data = new FormData();
-      data.append("image", shopPhoto);
-      shopUploadImage(data)
-      .then((res) => {
-        const { data } = res;
-        setShopData({
-          ...shopData,
-          SHOP_IMAGE: data.image.PROFILE_IMAGE,
-        })
-        var data1 = {
-          ShopImage: data.image.PROFILE_IMAGE,
-          ShopId: shopData._id,
-        }
-        updateShopData(data1);
-      })
+    console.log(shopPhoto);
+    uploadImage({
+      variables: {
+        file: shopPhoto,
+      },
+    });
+
+    // var data = new FormData();
+    // data.append("image", shopPhoto);
+    // shopUploadImage(data)
+    // .then((res) => {
+    //   const { data } = res;
+    //   setShopData({
+    //     ...shopData,
+    //     SHOP_IMAGE: data.image.PROFILE_IMAGE,
+    //   })
+    //   var data1 = {
+    //     ShopImage: data.image.PROFILE_IMAGE,
+    //     ShopId: shopData._id,
+    //   }
+    //   updateShopData(data1);
+    // })
   };
 
   const handleEditIcon = (item) => {
@@ -134,12 +155,10 @@ function ShopPage() {
   };
 
   const imageClickHandler = (event) => {
-      navigate("/item", {
-        state: event.target.name,
-      });
+    navigate("/item", {
+      state: event.target.name,
+    });
   };
-  
-
 
   let ShopItemImages = (
     <>
@@ -204,13 +223,16 @@ function ShopPage() {
       //                                                                          https://www.etsy.com/images/avatars/default_shop_icon_280x280.png 280w,
       //                                                                          https://www.etsy.com/images/avatars/default_shop_icon_180x180.png 180w,
       //                                                                       https://www.etsy.com/images/avatars/default_shop_icon_75x75.png 75w"
-      src={shopData.SHOP_IMAGE ? `${backend}/images/${shopData.SHOP_IMAGE}` :"https://www.etsy.com/images/avatars/default_shop_icon_180x180.png"}
+      src={
+        shopData.SHOP_IMAGE
+          ? `${backend}/images/${shopData.SHOP_IMAGE}`
+          : "https://www.etsy.com/images/avatars/default_shop_icon_180x180.png"
+      }
       sizes="(min-width: 900px) 18vw, 30vw"
       alt=""
     />
   );
-  if(shopData.SHOP_IMAGE) {
-    
+  if (shopData.SHOP_IMAGE) {
   }
 
   return (
@@ -296,20 +318,20 @@ function ShopPage() {
                     Add Item
                   </Button>
                 )}
-                
+
                 <ShopItemForm
-                    data={state}
-                    show={showItemForm}
-                    onHide={() => setShowItemForm(false)}
-                    key={selectedItem.ItemId}
-                  />
+                  data={state}
+                  show={showItemForm}
+                  onHide={() => setShowItemForm(false)}
+                  key={selectedItem.ItemId}
+                />
                 <ShopEditItemForm
-                    data={shopData._id}
-                    show={showEditItemForm}
-                    onHide={() => setShowEditItemForm(false)}
-                    item={selectedItem}
-                    key={selectedItem._id}
-                  />
+                  data={shopData._id}
+                  show={showEditItemForm}
+                  onHide={() => setShowEditItemForm(false)}
+                  item={selectedItem}
+                  key={selectedItem._id}
+                />
               </div>
             </div>
           </div>
