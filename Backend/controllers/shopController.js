@@ -1,49 +1,35 @@
 const Shop = require("../models/Shop");
 const User = require("../models/User");
 
-exports.shop_check_name = (req, res) => {
-  const shopname = req.body.data;
-  Shop.findOne(
+exports.shop_check_name = (args) => {
+  const { shopname } = args;
+  return Shop.findOne(
     {
       SHOP_NAME: shopname,
-    },
-    (error, shop) => {
-      if (error) {
-        res.json({
-          status: "error",
-          message: "Error in mongo connection",
-          error: error,
-        });
-      }
-      if (shop) {
-        res.json({
-          status: "ok",
-          message: "Shop already exist",
-          shopFound: true,
-        });
-      } else {
-        res.json({ status: "ok", shopFound: false });
-      }
     }
+    // ,
+    // (error, shop) => {
+    //   if (error) {
+    //     console.log(error, "error");
+    //   } else {
+    //     return shop;
+    //   }
+    // }
   );
 };
 
-exports.shop_add_new = (req, res) => {
-  const { shopname, userId } = req.body.data;
+exports.shop_add_new = (args) => {
+  const { SHOP_NAME, OWNER } = args;
   const newShop = new Shop({
-    SHOP_NAME: shopname,
-    OWNER: userId,
+    SHOP_NAME: SHOP_NAME,
+    OWNER: OWNER,
   });
   newShop.save(function (err) {
     if (err) {
-      return res.json({
-        status: "error",
-        error: err,
-        message: "error adding shop",
-      });
+      console.log(err,"error");
     } else {
       User.findOne({
-        _id: userId,
+        _id: OWNER,
       }).then((user) => {
         user.SHOP = newShop._id;
         user.save((error) => {
@@ -51,31 +37,26 @@ exports.shop_add_new = (req, res) => {
             throw error;
           }
         });
-        res.json({
-          status: "ok",
-          shop: {
-            SHOP: newShop._id,
-          },
-        });
       });
     }
   });
+  return newShop;
 };
 
-exports.shop_details = (req, res) => {
-  const shopid = req.query.shopid;
-  Shop.findOne({
-    _id: shopid,
+exports.shop_details = (args) => {
+  const {_id} = args;
+  return Shop.findOne({
+    _id: _id,
   })
-    .populate("OWNER")
-    .populate("SHOP_ITEMS")
-    .exec()
-    .then((shop) => {
-      res.json({ status: "ok", shop: shop });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    // .populate("OWNER")
+    // .populate("SHOP_ITEMS")
+    // .exec()
+    // .then((shop) => {
+    //   res.json({ status: "ok", shop: shop });
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
 };
 
 exports.shop_add_photo = (req, res) => {

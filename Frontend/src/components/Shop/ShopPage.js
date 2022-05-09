@@ -15,6 +15,9 @@ import { useSelector } from "react-redux";
 import ShopItemForm from "./ShopItemForm";
 import { backend } from "../../config/backend";
 import ShopEditItemForm from "./ShopEditItemForm";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_SHOP } from "../../GraphQL/Queries/ShopQueries";
+import { GET_ITEM_LIST } from "../../GraphQL/Queries/ItemQueries";
 // import ShopItemFormEdit from "./ShopItemFormEdit";
 
 function ShopPage() {
@@ -34,6 +37,12 @@ function ShopPage() {
   const { userReducer } = useSelector((state) => state);
   const userReduxData = userReducer.userReducer;
 
+  const { loading, error, data: shopDetails } = useQuery(GET_SHOP, {
+    variables: { _id: state },
+  })
+
+  const [findItemList] = useLazyQuery(GET_ITEM_LIST);
+
   // const reduxState = useSelector((state) => state);
   // const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
   // let temp = "624e120e2371c45d82211290";
@@ -42,7 +51,7 @@ function ShopPage() {
     //   navigate('/');
     // }
 
-    let isSubscribed = true;
+    // let isSubscribed = true;
 
     // let totalSold = responseShopItems.data.reduce((prev, curr) => {
     //   return (prev += curr.QuantitySold);
@@ -57,29 +66,47 @@ function ShopPage() {
     //   // console.log(data.shop);
     // }
 
-    if (isSubscribed) {
+    // if (isSubscribed) {
      
       
-      // fetchShopInfo(temp).catch(console.error());
-      fetchShopData(state).then(async (res) => {
-        const { data } = res;
-        setTimeout(() => {
-          setShopData(data.shop);
-        setShopItems(data.shop.SHOP_ITEMS);
-         setOwnerData(data.shop.OWNER);
-        });
-        if(data.shop.OWNER._id === userReduxData._id) {
-          setIsOwner(true);
-        }
-      });
+    //   // fetchShopInfo(temp).catch(console.error());
+    //   fetchShopData(state).then(async (res) => {
+    //     const { data } = res;
+    //     setTimeout(() => {
+    //       setShopData(data.shop);
+    //     setShopItems(data.shop.SHOP_ITEMS);
+    //      setOwnerData(data.shop.OWNER);
+    //     });
+    //     if(data.shop.OWNER._id === userReduxData._id) {
+    //       setIsOwner(true);
+    //     }
+    //   });
       
      
       
+    // }
+    // return () => {
+    //   isSubscribed = false;
+    // };
+    let isSubscribed = true;
+    const fetchAllDetails = async(shopDetails) => {
+      if(shopDetails) {
+        setShopData(shopDetails.findShop)
+        let {data: itemsData} = await findItemList({ variables: { idList: shopDetails.findShop.SHOP_ITEMS }})
+        setShopItems(itemsData.findItemList);
+  
+      }
+    }
+    if(isSubscribed) {
+      fetchAllDetails(shopDetails)
     }
     return () => {
       isSubscribed = false;
     };
-  }, [state, userReduxData._id]);
+    
+
+
+  }, [findItemList, shopDetails]);
   const handleImageChange = async (event) => {
     var shopPhoto = event.target.files[0];
       var data = new FormData();
@@ -153,12 +180,12 @@ function ShopPage() {
     />
   );
   if (shopData.OWNER) {
-     let imgURL = `${backend}/images/${shopData.OWNER.PROFILE_IMAGE}`;
+    //  let imgURL = `${backend}/images/${shopData.OWNER.PROFILE_IMAGE}`;
     OwnerImage = (
       <img
         style={{ width: 100, height: 100 }}
         id="profile-image"
-        src={imgURL}
+        // src={imgURL}
         alt=""
         className="img-fluid rounded-circle"
       />

@@ -12,6 +12,17 @@ export const GET_ALL_ITEMS = gql`
   }
 `;
 
+export const GET_ITEM_LIST = gql`
+  query findItemList($idList: [String]) {
+    findItemList(idList: $idList) {
+      ITEM_NAME
+      _id
+      ITEM_IMAGE
+      QUANTITY_SOLD
+    }
+  }
+`;
+
 export const GET_ITEM_BY_ID = gql`
   query findItem($_id: String!) {
     findItem(_id: $_id) {
@@ -23,6 +34,7 @@ export const GET_ITEM_BY_ID = gql`
       DESCRIPTION
       PRICE
       QUANTITY_SOLD
+      SHOP
     }
   }
 `;

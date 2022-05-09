@@ -123,3 +123,10 @@ exports.item_search = (args) => {
     // }
   );
 };
+
+exports.item_list = (args) => {
+  const { idList } = args;
+  return Item.find({
+    _id: { $in: idList },
+  });
+};

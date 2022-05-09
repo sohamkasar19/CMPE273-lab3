@@ -6,6 +6,10 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useNavigate } from "react-router";
 import { addNewShop, shopCheckName } from "../../service/shopService";
 import { useDispatch, useSelector } from "react-redux";
+import { CHECK_SHOP_NAME } from "../../GraphQL/Queries/ShopQueries";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { ADD_SHOP } from "../../GraphQL/Mutations/ShopMutations";
+import { userInfo } from "../../store/actions/userActions";
 
 function ShopName() {
   const navigate = useNavigate();
@@ -14,6 +18,10 @@ function ShopName() {
 
   const { userReducer } = useSelector((state) => state);
   const userReduxData = userReducer.userReducer;
+
+  const [checkShopName, { data: checkShopData }] = useLazyQuery(CHECK_SHOP_NAME);
+
+  const [addShop, { data: shopData }] = useMutation(ADD_SHOP);
 
   const dispatch = useDispatch();
 
@@ -34,27 +42,48 @@ function ShopName() {
     };
   }, [navigate, userReduxData.SHOP]);
 
-  let checkShopName = async () => {
-    let { data } = await shopCheckName(shopName);
-    if (data.shopFound === true) {
-      setIsAvailable(false);
-    }
-    if (data.shopFound === false) {
-      setIsAvailable(true);
-    }
+  let checkShopNameHelper = async () => {
+    // let { data } = await shopCheckName(shopName);
+    // if (data.shopFound === true) {
+    //   setIsAvailable(false);
+    // }
+    // if (data.shopFound === false) {
+    //   setIsAvailable(true);
+    // }
+    await checkShopName({ variables: { shopname: shopName } })
+    // setTimeout(() => {
+      if(checkShopData.checkShopName) {
+        setIsAvailable(false)
+      }
+      else {
+        setIsAvailable(true)
+      }
+    // }, 500);
   };
 
   let addShopName = async () => {
-    const data = {
-      shopname: shopName,
-      userId: userReduxData._id,
-    };
-    dispatch(addNewShop(data)).then((res) => {
-      const { SHOP } = res.payload;
-      navigate("/shop-page", {
-        state: SHOP,
-      });
-    });
+    // const data = {
+    //   shopname: shopName,
+    //   userId: userReduxData._id,
+    // };
+    // dispatch(addNewShop(data)).then((res) => {
+    //   const { SHOP } = res.payload;
+    //   navigate("/shop-page", {
+    //     state: SHOP,
+    //   });
+    // });
+    let data = await addShop({
+      variables: {
+        SHOP_NAME: shopName,
+        OWNER: userReduxData._id
+      }
+    })
+    dispatch(userInfo({SHOP: data.data.addShop._id}));
+    
+    // setTimeout(() => {
+    //   
+    // }, 500);
+    
   };
 
   const handleChangeShopName = (event) => {
@@ -68,7 +97,7 @@ function ShopName() {
   };
   const handleClickCheckAvailable = () => {
     if (shopName.length !== 0) {
-      checkShopName();
+      checkShopNameHelper();
     }
   };
 
