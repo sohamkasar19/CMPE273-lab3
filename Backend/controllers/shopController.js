@@ -59,8 +59,8 @@ exports.shop_details = (args) => {
     // });
 };
 
-exports.shop_add_photo = (req, res) => {
-  const { ShopImage, ShopId } = req.body.data;
+exports.shop_add_photo = (args) => {
+  const { ShopImage, ShopId } = args;
   // console.log(req.body.data);
   Shop.findOne({
     _id: ShopId,
@@ -69,7 +69,7 @@ exports.shop_add_photo = (req, res) => {
       // console.log(shop);
       shop.SHOP_IMAGE = ShopImage;
       shop.save();
-      res.json({ status: "ok" });
+      return true;
     })
     .catch((error) => {
       console.log(error);

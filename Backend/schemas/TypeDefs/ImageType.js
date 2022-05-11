@@ -12,7 +12,7 @@ const {
     name: "Image",
     fields: {
       file: {
-        type: GraphQLUpload,
+        type: GraphQLString,
       },
     },
   });

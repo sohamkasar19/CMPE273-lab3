@@ -161,3 +161,10 @@ exports.user_get_favourites = async (req, res) => {
       console.log(error);
     });
 };
+
+exports.user_by_id = (args) => {
+  const {_id} = args;
+  return User.findOne({
+    _id: _id,
+  })
+}

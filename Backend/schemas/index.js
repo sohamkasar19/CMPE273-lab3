@@ -16,11 +16,14 @@ const {v4: uuid} = require('uuid');
 
 var itemController = require("../controllers/itemController");
 var shopController = require("../controllers/shopController");
+var userController = require("../controllers/userController");
+
 const Item = require("../models/Item");
 const ShopType = require("./TypeDefs/ShopType");
 const ImageType = require("./TypeDefs/ImageType");
 const UploadType = require("./TypeDefs/UploadType");
 const { uploadFileNew } = require("../utils/s3");
+const UserType = require("./TypeDefs/UserType");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -89,6 +92,18 @@ const RootQuery = new GraphQLObjectType({
         return shopController.shop_details(args);
       },
     },
+    getUserById: {
+      type: UserType,
+      args: {
+        _id: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return userController.user_by_id(args);
+      },
+    }
   },
 });
 
@@ -179,18 +194,31 @@ const Mutation = new GraphQLObjectType({
       },
     },
     uploadImage: {
-      type: GraphQLBoolean,
+      type: ImageType,
       args: {
         file: {
           type: GraphQLUpload,
         },
       },
       resolve  (parent, args) {
-        console.log(args.file);
-        
-        imageUpload(args.file);
-        // return shopController.shop_add_new(args);
+        let key =  imageUpload(args.file);
+        return {file : key}
       },
+    },
+    addShopImage: {
+      type: GraphQLBoolean,
+      args: {
+        ShopId: {
+          type: GraphQLString
+        },
+        ShopImage: {
+          type: GraphQLString
+        }
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return shopController.shop_add_photo(args);
+      }
     }
   },
 });
@@ -198,11 +226,10 @@ const Mutation = new GraphQLObjectType({
 const imageUpload = async(file) => {
   console.log(file);
   const {createReadStream, filename} = await file
-
+  let key = uuid();
   let stream = createReadStream();
-  const res = await uploadFileNew(stream, uuid())
-  console.log(res);
-
+  const res = await uploadFileNew(stream, key)
+  return key
 }
 
 module.exports = new GraphQLSchema({ query: RootQuery, mutation: Mutation });
