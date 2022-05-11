@@ -89,7 +89,7 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve(parent, args) {
         // console.log(args);
-        return shopController.shop_details(args);
+        return spController.shop_details(args);
       },
     },
     getUserById: {
@@ -102,6 +102,39 @@ const RootQuery = new GraphQLObjectType({
       resolve(parent, args) {
         // console.log(args);
         return userController.user_by_id(args);
+      },
+    },
+    userLogin: {
+      type: UserType,
+      args: {
+        email: {
+          type: GraphQLString,
+        },
+        password: {
+          type: GraphQLString,
+        }
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return userController.user_login_post(args);
+      },
+    },
+    userSignup: {
+      type: UserType,
+      args: {
+        name: {
+          type: GraphQLString,
+        },
+        email: {
+          type: GraphQLString,
+        },
+        password: {
+          type: GraphQLString,
+        }
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return userController.user_signup_post(args);
       },
     }
   },

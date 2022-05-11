@@ -97,7 +97,7 @@ function ShopPage() {
     return () => {
       isSubscribed = false;
     };
-  }, [findItemList, getUserById, shopDetails, userReduxData._id]);
+  }, [findItemList, getUserById, navigate, shopDetails, state, userReduxData._id]);
 
   const handleImageChange = async (event) => {
     var shopPhoto = event.target.files[0];

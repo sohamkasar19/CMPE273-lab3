@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { userSignup } from "../../service/userService";
+import { USER_SIGNUP } from "../../GraphQL/Queries/UserQueries";
+import { useLazyQuery } from "@apollo/client";
+import { userInfo } from "../../store/actions/userActions";
 
 function SignupForm(props) {
   const [signupFormValue, setSignupFormValue] = useState({
@@ -11,6 +14,8 @@ function SignupForm(props) {
   });
   const [showAlert, setShowAlert] = useState(false);
 
+  const [userSignup] = useLazyQuery(USER_SIGNUP);
+
   const dispatch = useDispatch();
 
   const handleSignupFormChange = (e) => {
@@ -19,15 +24,31 @@ function SignupForm(props) {
       [e.target.name]: e.target.value,
     });
   };
-  const handleSignupFormSubmit = (e) => {
+  const handleSignupFormSubmit = async (e) => {
     e.preventDefault();
-    dispatch(userSignup(signupFormValue)).then((res) => {
-      if (res) {
-        props.onHide();
-      } else {
-        setShowAlert(true);
+    // dispatch(userSignup(signupFormValue)).then((res) => {
+    //   if (res) {
+    //     props.onHide();
+    //   } else {
+    //     setShowAlert(true);
+    //   }
+    // });
+    let userData = await userSignup({
+      variables: {
+        name: signupFormValue.name,
+        email: signupFormValue.email,
+        password: signupFormValue.password
       }
-    });
+    })
+    console.log(userData.data.userSignup);
+    if(userData.data.userLogin ) {
+      // props.onHide()
+      dispatch(userInfo(userData.data.userLogin))
+      props.onHide()
+    }
+    else {
+      setShowAlert(true)
+    }
   };
 
   return (

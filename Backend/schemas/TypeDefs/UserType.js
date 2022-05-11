@@ -4,6 +4,7 @@ const {
     GraphQLID,
     GraphQLInt,
     GraphQLFloat,
+    GraphQLList,
   } = require("graphql");
   
   const UserType = new GraphQLObjectType({
@@ -45,6 +46,12 @@ const {
       PROFILE_IMAGE: {
         type: GraphQLString,
       },
+      SHOP: {
+        type: GraphQLString,
+      },
+      ORDER_HISTORY: {
+        type: new GraphQLList(GraphQLString)
+      }
     },
   });
   

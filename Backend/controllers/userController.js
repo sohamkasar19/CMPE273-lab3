@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const { SECRET } = require("../utils/config");
 
-exports.user_signup_post = async (req, res) => {
-  const { email, name, password } = req.body.data;
+exports.user_signup_post = async (args) => {
+  const { email, name, password } = args;
 
   const hashed_password = bcrypt.hashSync(password, saltRounds);
   const newUser = new User({
@@ -13,61 +13,81 @@ exports.user_signup_post = async (req, res) => {
     NAME: name,
     PASSWORD: hashed_password,
   });
+  // newUser.save(function (err) {
+  //   if (err) {
+  //     // if (err.name === "MongoError" && err.code === 11000) {
+  //     return res.json({ status: "error", error: "Duplicate email" });
+  //     // }
+  //   } else {
+  //     const payload = { _id: newUser._id };
+  //     jwt.sign(
+  //       payload,
+  //       SECRET,
+  //       {
+  //         expiresIn: 8 * 3600,
+  //       },
+  //       (err, token) => {
+  //         res.json({
+  //           status: "ok",
+  //           token: "Bearer " + token,
+  //           user: newUser,
+  //         });
+  //       }
+  //     );
+  //   }
+  // });
+  console.log(newUser);
   newUser.save(function (err) {
     if (err) {
-      // if (err.name === "MongoError" && err.code === 11000) {
-      return res.json({ status: "error", error: "Duplicate email" });
-      // }
-    } else {
-      const payload = { _id: newUser._id };
-      jwt.sign(
-        payload,
-        SECRET,
-        {
-          expiresIn: 8 * 3600,
-        },
-        (err, token) => {
-          res.json({
-            status: "ok",
-            token: "Bearer " + token,
-            user: newUser,
-          });
-        }
-      );
-    }
+      return null;
+    } 
   });
+  return newUser
 };
 
-exports.user_login_post = async (req, res) => {
-  const { email, password } = req.body.data;
-  User.findOne({ EMAIL: email }, (error, user) => {
-    if (error) {
-      res.json({ status: "error", error: "Error in mongo connection" });
-    }
-    if (user) {
-      bcrypt.compare(password, user.PASSWORD).then((isMatch) => {
-        if (isMatch) {
-          const payload = { _id: user._id };
-          jwt.sign(
-            payload,
-            SECRET,
-            {
-              expiresIn: 8 * 3600,
-            },
-            (err, token) => {
-              res.json({
-                status: "ok",
-                token: "Bearer " + token,
-                user: user,
-              });
-            }
-          );
-        }
-      });
-    } else {
-      res.json({ status: "error", error: "User not found" });
-    }
-  });
+exports.user_login_post = async (args) => {
+  // User.findOne({ EMAIL: email }, (error, user) => {
+  //   if (error) {
+  //     res.json({ status: "error", error: "Error in mongo connection" });
+  //   }
+  //   if (user) {
+  //     bcrypt.compare(password, user.PASSWORD).then((isMatch) => {
+  //       if (isMatch) {
+  //         const payload = { _id: user._id };
+  //         jwt.sign(
+  //           payload,
+  //           SECRET,
+  //           {
+  //             expiresIn: 8 * 3600,
+  //           },
+  //           (err, token) => {
+  //             res.json({
+  //               status: "ok",
+  //               token: "Bearer " + token,
+  //               user: user,
+  //             });
+  //           }
+  //         );
+  //       }
+  //     });
+  //   } else {
+  //     res.json({ status: "error", error: "User not found" });
+  //   }
+  // });
+  const { email, password } = args;
+  let user = await User.findOne({ EMAIL: email });
+  if (user) {
+    bcrypt.compare(password, user.PASSWORD).then((isMatch) => {
+      // console.log("isMatch",isMatch);
+      if (isMatch) {
+        return user;
+      } else {
+        return {};
+      }
+    });
+  } else {
+    return {};
+  }
 };
 
 exports.user_edit_profile_put = async (req, res) => {
@@ -163,8 +183,8 @@ exports.user_get_favourites = async (req, res) => {
 };
 
 exports.user_by_id = (args) => {
-  const {_id} = args;
+  const { _id } = args;
   return User.findOne({
     _id: _id,
-  })
-}
+  });
+};

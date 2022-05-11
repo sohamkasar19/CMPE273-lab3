@@ -3,6 +3,9 @@ import { Alert, Button, Form, Modal } from "react-bootstrap";
 import SignupForm from "./SignupForm";
 import { userLogin } from "../../service/userService";
 import { useDispatch } from "react-redux";
+import { useLazyQuery } from "@apollo/client";
+import { USER_LOGIN } from "../../GraphQL/Queries/UserQueries";
+import { userInfo } from "../../store/actions/userActions";
 
 function LoginForm(props) {
   const [showSignupForm, setShowSignupForm] = useState(false);
@@ -11,6 +14,8 @@ function LoginForm(props) {
     password: "",
   });
   const [showAlert, setShowAlert] = useState(false);
+
+  const [userLogin] = useLazyQuery(USER_LOGIN);
 
   const dispatch = useDispatch();
 
@@ -28,15 +33,23 @@ function LoginForm(props) {
   const handleHideSignup = () => {
     setShowSignupForm(false);
   };
-  const handleLoginFormSubmit = (e) => {
+  const handleLoginFormSubmit = async (e) => {
     e.preventDefault();
-    dispatch(userLogin(loginFormValue)).then((res) => {
-      if (res) {
-        props.onHide();
-      } else {
-        setShowAlert(true);
+
+    let userData = await userLogin({
+      variables: {
+        email: loginFormValue.email,
+        password: loginFormValue.password
       }
-    });
+    })
+    if(userData.data.userLogin && userData.data.userLogin.NAME != null) {
+      // props.onHide()
+      dispatch(userInfo(userData.data.userLogin))
+      props.onHide()
+    }
+    else {
+      setShowAlert(true)
+    }
   };
   return (
     <>
