@@ -23,6 +23,8 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SHOP } from "../../GraphQL/Queries/ShopQueries";
 import { GET_ITEM_LIST } from "../../GraphQL/Queries/ItemQueries";
 import { IMAGE_UPLOAD } from "../../GraphQL/Mutations/ImageMutation";
+import { ADD_SHOP_IMAGE } from "../../GraphQL/Mutations/ShopMutations";
+import { GET_USER_BY_ID } from "../../GraphQL/Queries/UserQueries";
 // import ShopItemFormEdit from "./ShopItemFormEdit";
 
 function ShopPage() {
@@ -31,7 +33,7 @@ function ShopPage() {
 
   const [shopData, setShopData] = useState({});
   const [shopItems, setShopItems] = useState([]);
-  const [isOwner, setIsOwner] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
   const [ownerData, setOwnerData] = useState({});
   const [showItemForm, setShowItemForm] = useState(false);
   const [showEditItemForm, setShowEditItemForm] = useState(false);
@@ -51,59 +53,42 @@ function ShopPage() {
   });
 
   const [uploadImage, { data: imageData }] = useMutation(IMAGE_UPLOAD);
+  const [addShopImage] = useMutation(ADD_SHOP_IMAGE);
 
   const [findItemList] = useLazyQuery(GET_ITEM_LIST);
+  const [getUserById] = useLazyQuery(GET_USER_BY_ID);
 
   // const reduxState = useSelector((state) => state);
   // const [currencyvalue, setcurrencyValue] = useState(reduxState.currency);
   // let temp = "624e120e2371c45d82211290";
   useEffect(() => {
-    // if(!state) {
-    //   navigate('/');
-    // }
-
-    // let isSubscribed = true;
-
-    // let totalSold = responseShopItems.data.reduce((prev, curr) => {
-    //   return (prev += curr.QuantitySold);
-    // }, 0);
-    // console.log(totalSold);
-    // setTotalSales(totalSold);
-    // const fetchShopInfo = async (shopid) => {
-    //   let response =  await fetchShopData(shopid);
-    //   const { data } = response;
-    //   await setShopData(data.shop);
-
-    //   // console.log(data.shop);
-    // }
-
-    // if (isSubscribed) {
-
-    //   // fetchShopInfo(temp).catch(console.error());
-    //   fetchShopData(state).then(async (res) => {
-    //     const { data } = res;
-    //     setTimeout(() => {
-    //       setShopData(data.shop);
-    //     setShopItems(data.shop.SHOP_ITEMS);
-    //      setOwnerData(data.shop.OWNER);
-    //     });
-    //     if(data.shop.OWNER._id === userReduxData._id) {
-    //       setIsOwner(true);
-    //     }
-    //   });
-
-    // }
-    // return () => {
-    //   isSubscribed = false;
-    // };
+    if(!state) {
+      navigate('/');
+    }
     let isSubscribed = true;
     const fetchAllDetails = async (shopDetails) => {
       if (shopDetails) {
+        if (shopDetails.findShop.OWNER === userReduxData._id) {
+          setIsOwner(true);
+        }
         setShopData(shopDetails.findShop);
+        let { data: userData } = await getUserById({
+          variables: {
+            _id: shopDetails.findShop.OWNER,
+          },
+        });
+        setOwnerData(userData.getUserById);
+
         let { data: itemsData } = await findItemList({
           variables: { idList: shopDetails.findShop.SHOP_ITEMS },
         });
         setShopItems(itemsData.findItemList);
+        console.log(itemsData.findItemList);
+        let totalSold = itemsData.findItemList.reduce((prev, curr) => {
+          return (prev += curr.QUANTITY_SOLD);
+        }, 0);
+        console.log(totalSold);
+        setTotalSales(totalSold);
       }
     };
     if (isSubscribed) {
@@ -112,15 +97,8 @@ function ShopPage() {
     return () => {
       isSubscribed = false;
     };
-  }, [findItemList, shopDetails]);
-  // function handleImageChange({
-  //   target: {
-  //     validity,
-  //     files: [file],
-  //   },
-  // }) {
-  //   if (validity.valid) uploadImage({  variables: { file: file[0] } });
-  // }
+  }, [findItemList, getUserById, shopDetails, userReduxData._id]);
+
   const handleImageChange = async (event) => {
     var shopPhoto = event.target.files[0];
     console.log(shopPhoto);
@@ -128,23 +106,21 @@ function ShopPage() {
       variables: {
         file: shopPhoto,
       },
+    }).then((res) => {
+      console.log(res);
+      setShopData({
+        ...shopData,
+        SHOP_IMAGE: res.data.uploadImage.file,
+      });
+      addShopImage({
+        variables: {
+          ShopId: state,
+          ShopImage: res.data.uploadImage.file,
+        },
+      });
     });
 
-    // var data = new FormData();
-    // data.append("image", shopPhoto);
-    // shopUploadImage(data)
-    // .then((res) => {
-    //   const { data } = res;
-    //   setShopData({
-    //     ...shopData,
-    //     SHOP_IMAGE: data.image.PROFILE_IMAGE,
-    //   })
-    //   var data1 = {
-    //     ShopImage: data.image.PROFILE_IMAGE,
-    //     ShopId: shopData._id,
-    //   }
-    //   updateShopData(data1);
-    // })
+
   };
 
   const handleEditIcon = (item) => {
@@ -199,12 +175,11 @@ function ShopPage() {
     />
   );
   if (shopData.OWNER) {
-    //  let imgURL = `${backend}/images/${shopData.OWNER.PROFILE_IMAGE}`;
     OwnerImage = (
       <img
         style={{ width: 100, height: 100 }}
         id="profile-image"
-        // src={imgURL}
+        src={`https://etsy-images-bucket.s3.amazonaws.com/${ownerData.PROFILE_IMAGE}`}
         alt=""
         className="img-fluid rounded-circle"
       />
@@ -213,19 +188,15 @@ function ShopPage() {
 
   let contactDetails = null;
   if (showContactDetails) {
-    contactDetails = <p>Email : {shopData.OWNER.EMAIL}</p>;
+    contactDetails = <p>Email : {ownerData.EMAIL}</p>;
   }
   let shopImage = (
     <img
-      style={{ width: 150, height: 150 }}
+      style={{ height: 150 }}
       className="shop-icon-external wt-rounded wt-display-block snipcss-Q6mLH snip-img"
-      // srcSet="https://www.etsy.com/images/avatars/default_shop_icon_500x500.png 500w,
-      //                                                                          https://www.etsy.com/images/avatars/default_shop_icon_280x280.png 280w,
-      //                                                                          https://www.etsy.com/images/avatars/default_shop_icon_180x180.png 180w,
-      //                                                                       https://www.etsy.com/images/avatars/default_shop_icon_75x75.png 75w"
       src={
         shopData.SHOP_IMAGE
-          ? `${backend}/images/${shopData.SHOP_IMAGE}`
+          ? `https://etsy-images-bucket.s3.amazonaws.com/${shopData.SHOP_IMAGE}`
           : "https://www.etsy.com/images/avatars/default_shop_icon_180x180.png"
       }
       sizes="(min-width: 900px) 18vw, 30vw"

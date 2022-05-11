@@ -7,3 +7,9 @@ export const ADD_SHOP = gql`
     }
   }
 `;
+
+export const ADD_SHOP_IMAGE = gql`
+  mutation addShopImage($ShopId: String, $ShopImage: String) {
+    addShopImage(ShopId: $ShopId, ShopImage: $ShopImage) 
+  }
+`;
