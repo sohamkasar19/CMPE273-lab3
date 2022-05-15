@@ -42,6 +42,7 @@ function LoginForm(props) {
         password: loginFormValue.password
       }
     })
+    console.log(userData);
     if(userData.data.userLogin && userData.data.userLogin.NAME != null) {
       // props.onHide()
       dispatch(userInfo(userData.data.userLogin))

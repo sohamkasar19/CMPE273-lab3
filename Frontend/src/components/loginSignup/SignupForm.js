@@ -14,7 +14,7 @@ function SignupForm(props) {
   });
   const [showAlert, setShowAlert] = useState(false);
 
-  const [userSignup] = useLazyQuery(USER_SIGNUP);
+  const [userSignup, error] = useLazyQuery(USER_SIGNUP);
 
   const dispatch = useDispatch();
 
@@ -39,7 +39,22 @@ function SignupForm(props) {
         email: signupFormValue.email,
         password: signupFormValue.password
       }
-    })
+    }).then((res) =>{
+      console.log(res);
+      // if(error) {
+      //   setShowAlert(true);
+      // }
+      // else 
+      if(res.data.userSignup) {
+        
+        dispatch(userInfo(res.data.userSignup))
+        props.onHide();
+      }
+      else {
+        setShowAlert(true);
+      }
+    }
+    )
     console.log(userData.data.userSignup);
     if(userData.data.userLogin ) {
       // props.onHide()

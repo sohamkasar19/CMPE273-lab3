@@ -36,13 +36,9 @@ exports.user_signup_post = async (args) => {
   //     );
   //   }
   // });
-  console.log(newUser);
-  newUser.save(function (err) {
-    if (err) {
-      return null;
-    } 
-  });
-  return newUser
+  // console.log(newUser);
+  let res = await newUser.save();
+  return res
 };
 
 exports.user_login_post = async (args) => {
@@ -76,18 +72,19 @@ exports.user_login_post = async (args) => {
   // });
   const { email, password } = args;
   let user = await User.findOne({ EMAIL: email });
-  if (user) {
-    bcrypt.compare(password, user.PASSWORD).then((isMatch) => {
-      // console.log("isMatch",isMatch);
-      if (isMatch) {
-        return user;
-      } else {
-        return {};
-      }
-    });
-  } else {
-    return {};
-  }
+  // console.log(user);
+  return user;
+  // if (user) {
+  //   bcrypt.compare(password, user.PASSWORD).then((isMatch) => {
+  //     console.log("isMatch",isMatch);
+  //     if (isMatch === true) {
+  //       console.log("isMatch",isMatch);
+  //       return user;
+  //     }
+  //   });
+  // } else {
+  //   return {};
+  // }
 };
 
 exports.user_edit_profile_put = async (req, res) => {
