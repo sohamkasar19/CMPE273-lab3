@@ -38,7 +38,7 @@ exports.user_signup_post = async (args) => {
   // });
   // console.log(newUser);
   let res = await newUser.save();
-  return res
+  return res;
 };
 
 exports.user_login_post = async (args) => {
@@ -87,7 +87,7 @@ exports.user_login_post = async (args) => {
   // }
 };
 
-exports.user_edit_profile_put = async (req, res) => {
+exports.user_edit_profile_put = async (args) => {
   const {
     email,
     name,
@@ -98,36 +98,46 @@ exports.user_edit_profile_put = async (req, res) => {
     city,
     country,
     profilephoto,
-  } = req.body.data;
-  User.findOne({
-    EMAIL: email,
-  })
-    .then((user) => {
-      user.NAME = name ?? "";
-      user.PHONE_NO = phonenumber ?? "";
-      user.GENDER = gender ?? "";
-      user.DOB = DOB ?? "";
-      user.ADDRESS = address ?? "";
-      user.CITY = city ?? "";
-      user.COUNTRY = country ?? "";
-      user.PROFILE_IMAGE = profilephoto ?? "";
-      user.save((error) => {
-        if (error) {
-          throw error;
-        }
-      });
-      res.json({
-        status: "ok",
-        user: user,
-      });
-    })
-    .catch((err) => {
-      res.json({
-        status: "error",
-        error: err,
-        message: "error while updating user",
-      });
-    });
+  } = args;
+
+  const update = {
+    PHONE_NO: phonenumber ?? "",
+    GENDER: gender ?? "",
+    DOB: DOB ?? "",
+    ADDRESS: address ?? "",
+    CITY: city ?? "",
+    COUNTRY: country ?? "",
+    PROFILE_IMAGE: profilephoto ?? "",
+    NAME: name ?? "",
+  };
+
+  let user = await User.findOneAndUpdate({ EMAIL: email }, update, {
+    new: true,
+  });
+  return user
+
+  // User.findOne({
+  //   EMAIL: email,
+  // })
+  //   .then((user) => {
+  //     user.NAME = name ?? "";
+  //     user.PHONE_NO = phonenumber ?? "";
+  //     user.GENDER = gender ?? "";
+  //     user.DOB = DOB ?? "";
+  //     user.ADDRESS = address ?? "";
+  //     user.CITY = city ?? "";
+  //     user.COUNTRY = country ?? "";
+  //     user.PROFILE_IMAGE = profilephoto ?? "";
+  //     user.save((error) => {
+  //       if (error) {
+  //         throw error;
+  //       }
+  //     });
+  //     return user;
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };
 
 exports.user_add_favourite = async (req, res) => {

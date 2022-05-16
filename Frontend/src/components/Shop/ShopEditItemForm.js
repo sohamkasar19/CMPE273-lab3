@@ -9,9 +9,12 @@ import {
   itemEdit,
   itemUploadImage,
 } from "../../service/itemService";
+import { IMAGE_UPLOAD } from "../../GraphQL/Mutations/ImageMutation";
+
 
 function ShopEditItemForm(props) {
   const [editItem, { error }] = useMutation(EDIT_ITEM);
+  const [uploadImage] = useMutation(IMAGE_UPLOAD);
 
   let itemSelected = props.item;
   const [itemForm, setItemForm] = useState({
@@ -27,13 +30,15 @@ function ShopEditItemForm(props) {
   const handleChange = async (event) => {
     if (event.target.name === "ItemImage" && event.target.files[0]) {
       var itemPhoto = event.target.files[0];
-      var data = new FormData();
-      data.append("image", itemPhoto);
-      itemUploadImage(data).then((res) => {
-        const { data } = res;
+      uploadImage({
+        variables: {
+          file: itemPhoto,
+        },
+      }).then((res) => {
+        console.log(res);
         setItemForm({
           ...itemForm,
-          ItemImage: data.image.PROFILE_IMAGE,
+          ItemImage: res.data.uploadImage.file,
         });
       });
     } else {

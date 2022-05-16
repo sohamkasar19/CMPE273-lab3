@@ -4,12 +4,15 @@ import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { backend } from "../../config/backend";
 import { itemAddNew, itemUploadImage } from "../../service/itemService";
 import { ADD_ITEM } from "../../GraphQL/Mutations/ItemMutations";
+import { IMAGE_UPLOAD } from "../../GraphQL/Mutations/ImageMutation";
 import { useMutation } from "@apollo/client";
 
 function ShopItemForm(props) {
   // console.log(props);
 
   const [addItem, { error }] = useMutation(ADD_ITEM);
+
+  const [uploadImage] = useMutation(IMAGE_UPLOAD);
 
   const [itemForm, setItemForm] = useState({
     // ShopId: "",
@@ -23,16 +26,27 @@ function ShopItemForm(props) {
   const handleChange = async (event) => {
     if (event.target.name === "ItemImage" && event.target.files[0]) {
       var itemPhoto = event.target.files[0];
-      var data = new FormData();
-      data.append("image", itemPhoto);
-      itemUploadImage(data).then((res) => {
-        const { data } = res;
+      uploadImage({
+        variables: {
+          file: itemPhoto,
+        },
+      }).then((res) => {
+        console.log(res);
         setItemForm({
           ...itemForm,
-          ItemImage: data.image.PROFILE_IMAGE,
-          ShopId: props.data.toString(),
+          ItemImage: res.data.uploadImage.file,
         });
       });
+      // var data = new FormData();
+      // data.append("image", itemPhoto);
+      // itemUploadImage(data).then((res) => {
+      //   const { data } = res;
+      //   setItemForm({
+      //     ...itemForm,
+      //     ItemImage: data.image.PROFILE_IMAGE,
+      //     ShopId: props.data.toString(),
+      //   });
+      // });
     } else {
       setItemForm({
         ...itemForm,

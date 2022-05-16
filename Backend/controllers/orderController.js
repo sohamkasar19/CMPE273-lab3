@@ -2,9 +2,9 @@ const Order = require("../models/Order");
 const User = require("../models/User");
 const Item = require("../models/Item");
 
-exports.order_add = (req, res) => {
-  const { userId, cartData } = req.body.data;
-  const { addedItems, total } = cartData;
+exports.order_add = (args) => {
+  const { userId, addedItems, total } = args;
+
   console.log("isnide order add", addedItems, total);
   var datetime = new Date();
   console.log(datetime.toISOString().slice(0, 10));
@@ -41,21 +41,18 @@ exports.order_add = (req, res) => {
       .then((user) => {
         user.ORDER_HISTORY.push(newOrder);
         user.save();
-        res.json({
-          status: "ok",
-          message: "order added",
-        });
       })
       .catch((error) => {
         console.log(error);
       })
   );
   console.log("inside ");
+  return true;
 };
 
-exports.order_get = (req, res) => {
-  const userId = req.query.userId;
-  User.findOne({
+exports.order_get = async  (args) => {
+  const {userId} = args;
+  let user = await User.findOne({
     _id: userId,
   })
     .populate({
@@ -66,15 +63,16 @@ exports.order_get = (req, res) => {
         model: "Item",
       },
     })
-    .exec()
-    .then((user) => {
-      console.log(user.ORDER_HISTORY);
-      res.json({
-        status: "ok",
-        ORDER_HISTORY: user.ORDER_HISTORY,
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  return user.ORDER_HISTORY
+    // .exec()
+    // .then((user) => {
+    //   console.log(user.ORDER_HISTORY);
+    //   res.json({
+    //     status: "ok",
+    //     ORDER_HISTORY: user.ORDER_HISTORY,
+    //   });
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
 };

@@ -14,9 +14,12 @@ import {
   removeItem,
   subtractQuantity,
   addGiftWrap,
-  addMessage
+  addMessage,
+  checkoutCart
 } from "../../store/actions/userActions";
 import { checkout } from "../../service/orderService";
+import { useMutation } from "@apollo/client";
+import { ADD_ORDER } from "../../GraphQL/Mutations/OrderMutation";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -32,6 +35,8 @@ const CartPage = () => {
   const [giftWrapFlag, setGiftWrapFlag] = useState(new Map());
   const [message, setMessage] = useState(new Map());
 
+  const [addOrder] = useMutation(ADD_ORDER);
+
   let currencySymbol = null;
   if (currencyvalue === "USD") {
     currencySymbol = <MonetizationOnIcon />;
@@ -42,15 +47,21 @@ const CartPage = () => {
   }
 
   // console.log(cartDetails);
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     var checkoutData = {
       userId: userReduxData._id,
-      cartData: cartReduxData,
+      ...cartReduxData,
     };
-    dispatch(checkout(checkoutData));
-    setTimeout(() => {
-      navigate('/order-history')
-    }, 300);
+    console.log(checkoutData);
+    addOrder({variables: checkoutData})
+    .then((res) => {
+      dispatch(checkoutCart())
+      // dispatch(checkout(checkoutData));
+      setTimeout(() => {
+        navigate('/order-history')
+      }, 3000)
+    })
+    
   };
 
  
@@ -143,16 +154,16 @@ const CartPage = () => {
 
   let cartDetails = (
     <>
-      <div class="table-responsive">
-        <table class="table">
+      <div className="table-responsive">
+        <table className="table">
           <thead>
             <tr>
-              <td class="text-center">Item</td>
-              <td class="text-center">Quantity</td>
-              <td class="text-center">Price</td>
-              <td class="text-center">Gift Wrap</td>
-              <td class="text-center">Total</td>
-              <td class="text-center"></td>
+              <td className="text-center">Item</td>
+              <td className="text-center">Quantity</td>
+              <td className="text-center">Price</td>
+              <td className="text-center">Gift Wrap</td>
+              <td className="text-center">Total</td>
+              <td className="text-center"></td>
             </tr>
           </thead>
           <tbody>{cartItems}</tbody>

@@ -17,26 +17,26 @@ const ProfilePage = () => {
   const { userReducer } = useSelector((state) => state);
   const userData = userReducer.userReducer;
 
-  const [favouritesList, setFavouritesList] = useState([]);
+  // const [favouritesList, setFavouritesList] = useState([]);
 
-  useEffect(() => {
-    let isSubscribed = true;
-    let fetchFavorites = () => {
-      if(userData.FAVOURITES.length > 0) {
-        getFavourites(userData._id)
-        .then((res) => {
-          // console.log(res);
-          setFavouritesList(res.data.favourites);
-        })
-      }
-    }
-    if(isSubscribed) {
-      fetchFavorites();
-    }
-    return () => {
-      isSubscribed = false;
-    }
-  }, [userData.FAVOURITES.length, userData._id])
+  // useEffect(() => {
+  //   let isSubscribed = true;
+  //   let fetchFavorites = () => {
+  //     if(userData.FAVOURITES.length > 0) {
+  //       getFavourites(userData._id)
+  //       .then((res) => {
+  //         // console.log(res);
+  //         setFavouritesList(res.data.favourites);
+  //       })
+  //     }
+  //   }
+  //   if(isSubscribed) {
+  //     fetchFavorites();
+  //   }
+  //   return () => {
+  //     isSubscribed = false;
+  //   }
+  // }, [userData.FAVOURITES.length, userData._id])
   
 
   const handleEditIcon = () => {
@@ -63,32 +63,32 @@ const ProfilePage = () => {
       </Box>
     </>
   );
-  if(userData.FAVOURITES.length > 0) {
-    // console.log(userData._id);
-      FavouriteItemList = (
-        <>
-          <ImageList cols={4}>
-            {favouritesList.map((item) => (
-              <ImageListItem key={item._id}>
-                <img
-                  id="item-image"
-                  // key={item._id}
-                  src={`${backend}/images/${item.ITEM_IMAGE}`}
-                  name={item.ITEM_NAME}
-                  // src={`${item.ItemImage}?w=248&fit=crop&auto=format`}
-                  // srcSet={`${item.ItemImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  onClick={imageClickHandler}
-                  alt={item.ITEM_NAME}
-                  loading="lazy"
-                />
-                <ImageListItemBar title={item.ITEM_NAME} />
-              </ImageListItem>
-            ))}
-          </ImageList>
-        </>
-      );
+  // if(userData.FAVOURITES.length > 0) {
+  //   // console.log(userData._id);
+  //     FavouriteItemList = (
+  //       <>
+  //         <ImageList cols={4}>
+  //           {favouritesList.map((item) => (
+  //             <ImageListItem key={item._id}>
+  //               <img
+  //                 id="item-image"
+  //                 // key={item._id}
+  //                 src={`${backend}/images/${item.ITEM_IMAGE}`}
+  //                 name={item.ITEM_NAME}
+  //                 // src={`${item.ItemImage}?w=248&fit=crop&auto=format`}
+  //                 // srcSet={`${item.ItemImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
+  //                 onClick={imageClickHandler}
+  //                 alt={item.ITEM_NAME}
+  //                 loading="lazy"
+  //               />
+  //               <ImageListItemBar title={item.ITEM_NAME} />
+  //             </ImageListItem>
+  //           ))}
+  //         </ImageList>
+  //       </>
+  //     );
     
-  }
+  // }
 
   let profileImageData = (
     <img
@@ -99,7 +99,7 @@ const ProfilePage = () => {
     />
   );
   if(userData.PROFILE_IMAGE) {
-    const imgURL = `${backend}/images/${userData.PROFILE_IMAGE}`;
+    const imgURL = `https://etsy-images-bucket.s3.amazonaws.com/${userData.PROFILE_IMAGE}`;
     profileImageData = (
       <img
         id="profile-image"

@@ -16,8 +16,12 @@ export const GET_ITEM_LIST = gql`
   query findItemList($idList: [String]) {
     findItemList(idList: $idList) {
       ITEM_NAME
+      QUANTITY_AVAILABLE
+      CATEGORY
       _id
       ITEM_IMAGE
+      DESCRIPTION
+      PRICE
       QUANTITY_SOLD
     }
   }

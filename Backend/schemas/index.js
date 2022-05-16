@@ -8,15 +8,15 @@ const {
   GraphQLFloat,
   GraphQLList,
   GraphQLBoolean,
-  GraphQLScalarType
+  GraphQLScalarType,
 } = graphql;
 const { GraphQLUpload } = require("graphql-upload");
-const {v4: uuid} = require('uuid');
-
+const { v4: uuid } = require("uuid");
 
 var itemController = require("../controllers/itemController");
 var shopController = require("../controllers/shopController");
 var userController = require("../controllers/userController");
+var orderController = require("../controllers/orderController");
 
 const Item = require("../models/Item");
 const ShopType = require("./TypeDefs/ShopType");
@@ -24,6 +24,43 @@ const ImageType = require("./TypeDefs/ImageType");
 const UploadType = require("./TypeDefs/UploadType");
 const { uploadFileNew } = require("../utils/s3");
 const UserType = require("./TypeDefs/UserType");
+const OrderType = require("./TypeDefs/OrderType");
+
+const AddedItemType = new GraphQLScalarType({
+  name: "AddedItem",
+  fields: {
+    _id: {
+      type: GraphQLString,
+    },
+    ITEM_NAME: {
+      type: GraphQLString,
+    },
+    SHOP: {
+      type: GraphQLString,
+    },
+    CATEGORY: {
+      type: GraphQLString,
+    },
+    ITEM_IMAGE: {
+      type: GraphQLString,
+    },
+    PRICE: {
+      type: GraphQLFloat,
+    },
+    QUANTITY_AVAILABLE: {
+      type: GraphQLInt,
+    },
+    QUANTITY_SOLD: {
+      type: GraphQLInt,
+    },
+    DESCRIPTION: {
+      type: GraphQLString,
+    },
+    quantityInCart: {
+      type: GraphQLInt
+    },
+  },
+});
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -89,7 +126,7 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve(parent, args) {
         // console.log(args);
-        return spController.shop_details(args);
+        return shopController.shop_details(args);
       },
     },
     getUserById: {
@@ -112,7 +149,7 @@ const RootQuery = new GraphQLObjectType({
         },
         password: {
           type: GraphQLString,
-        }
+        },
       },
       resolve(parent, args) {
         // console.log(args);
@@ -130,13 +167,25 @@ const RootQuery = new GraphQLObjectType({
         },
         password: {
           type: GraphQLString,
-        }
+        },
       },
       resolve(parent, args) {
         // console.log(args);
         return userController.user_signup_post(args);
       },
-    }
+    },
+    getOrders: {
+      type: new GraphQLList(OrderType),
+      args: {
+        userId: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        // console.log(args);
+        return orderController.order_get(args);
+      },
+    },
   },
 });
 
@@ -233,36 +282,54 @@ const Mutation = new GraphQLObjectType({
           type: GraphQLUpload,
         },
       },
-      resolve  (parent, args) {
-        let key =  imageUpload(args.file);
-        return {file : key}
+      resolve(parent, args) {
+        let key = imageUpload(args.file);
+        return { file: key };
       },
     },
     addShopImage: {
       type: GraphQLBoolean,
       args: {
         ShopId: {
-          type: GraphQLString
+          type: GraphQLString,
         },
         ShopImage: {
-          type: GraphQLString
-        }
+          type: GraphQLString,
+        },
       },
       resolve(parent, args) {
         // console.log(args);
         return shopController.shop_add_photo(args);
-      }
-    }
+      },
+    },
+    addOrder: {
+      type: GraphQLBoolean,
+      args: {
+        userId: {
+          type: GraphQLString,
+        },
+        total: {
+          type: GraphQLFloat,
+        },
+        addedItems: {
+          type: new GraphQLList(AddedItemType),
+        },
+      },
+      resolve(parent, args) {
+        console.log(args);
+        return orderController.order_add(args);
+      },
+    },
   },
 });
 
-const imageUpload = async(file) => {
+const imageUpload = async (file) => {
   console.log(file);
-  const {createReadStream, filename} = await file
+  const { createReadStream, filename } = await file;
   let key = uuid();
   let stream = createReadStream();
-  const res = await uploadFileNew(stream, key)
-  return key
-}
+  const res = await uploadFileNew(stream, key);
+  return key;
+};
 
 module.exports = new GraphQLSchema({ query: RootQuery, mutation: Mutation });

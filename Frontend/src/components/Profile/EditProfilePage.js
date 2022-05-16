@@ -2,18 +2,28 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 // import { useNavigate } from "react-router";
 
-
-import { CountriesData } from './Countries'
+import { CountriesData } from "./Countries";
 import { useNavigate } from "react-router";
 import { backend } from "../../config/backend";
-import { userEditProfile, userUploadProfileImage } from "../../service/userService";
+import {
+  userEditProfile,
+  userUploadProfileImage,
+} from "../../service/userService";
 import { useDispatch, useSelector } from "react-redux";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { IMAGE_UPLOAD } from "../../GraphQL/Mutations/ImageMutation";
+import { EDIT_PROFILE } from "../../GraphQL/Mutations/UserMutation";
+import { userInfo } from "../../store/actions/userActions";
 
 export const EditProfilePage = () => {
   const navigate = useNavigate();
 
   const { userReducer } = useSelector((state) => state);
   const userReduxData = userReducer.userReducer;
+
+  const [uploadImage] = useMutation(IMAGE_UPLOAD);
+
+  const [editUserProfile] = useMutation(EDIT_PROFILE);
 
   const [userData, setUserData] = useState({
     name: userReduxData.NAME,
@@ -24,29 +34,39 @@ export const EditProfilePage = () => {
     address: userReduxData.ADDRESS,
     city: userReduxData.CITY,
     country: userReduxData.COUNTRY,
-    profilephoto: userReduxData.PROFILE_IMAGE
+    profilephoto: userReduxData.PROFILE_IMAGE,
   });
 
   const dispatch = useDispatch();
-  
 
-  const handleChange =  (e) => {
+  const handleChange = (e) => {
     if (e.target.name === "profilephoto") {
       var ProfilePhoto = e.target.files[0];
-      const imageData = new FormData();
-      imageData.append("image", ProfilePhoto);
-      dispatch(userUploadProfileImage(imageData))
-      .then(async (res) => {
-        const { PROFILE_IMAGE } = res.payload;
+      uploadImage({
+        variables: {
+          file: ProfilePhoto,
+        },
+      }).then((res) => {
+        console.log(res);
         setUserData({
           ...userData,
-          "profilephoto": PROFILE_IMAGE,
+          profilephoto: res.data.uploadImage.file,
         });
+      });
+      // const imageData = new FormData();
+      // imageData.append("image", ProfilePhoto);
+      // dispatch(userUploadProfileImage(imageData))
+      // .then(async (res) => {
+      //   const { PROFILE_IMAGE } = res.payload;
+      //   setUserData({
+      //     ...userData,
+      //     "profilephoto": PROFILE_IMAGE,
+      //   });
       // setUserData({
       //   ...userData,
       //   [e.target.name]: ProfilePhoto,
       // });
-      })
+      // })
     } else {
       setUserData({
         ...userData,
@@ -72,24 +92,29 @@ export const EditProfilePage = () => {
     //   })
     // }
     // else {
-      dispatch(userEditProfile(userData));
+    // dispatch(userEditProfile(userData));
+    let res = await editUserProfile({variables: {...userData}})
+    dispatch(userInfo(res.data.editUserProfile))
+    // console.log(res);
     // }
 
-    navigate('/profile-page');
-
+    navigate("/profile-page");
   };
-  let imgURL =  `${backend}/images/${userReduxData.PROFILE_IMAGE}`;
+  let imgURL = `${backend}/images/${userReduxData.PROFILE_IMAGE}`;
   let profileImageData = (
-    
     <img
       id="avatar_img"
-      src={userReduxData.PROFILE_IMAGE ? imgURL : "https://www.etsy.com/images/avatars/default_avatar_400x400.png"}
+      src={
+        userReduxData.PROFILE_IMAGE
+          ? imgURL
+          : "https://www.etsy.com/images/avatars/default_avatar_400x400.png"
+      }
       alt="https://www.etsy.com/images/avatars/default_avatar_400x400.png"
       className="img-fluid rounded-circle"
     />
   );
-  if(userData.profilephoto) {
-    let imgURL = `${backend}/images/${userData.profilephoto}`;
+  if (userData.profilephoto) {
+    let imgURL = `https://etsy-images-bucket.s3.amazonaws.com/${userData.profilephoto}`;
     profileImageData = (
       <img
         id="profile-image"
@@ -99,11 +124,9 @@ export const EditProfilePage = () => {
       />
     );
   }
-  
 
   return (
     <div>
-      
       {/* <Container fluid> */}
       <div id="content" className="clear " role="main">
         {/* <Row className="justify-content-md-center"> */}
@@ -145,7 +168,11 @@ export const EditProfilePage = () => {
                 View Profile
               </a>
             </div>
-            <form className="section-inner" encType="multipart/form-data" onSubmit={handleSubmit}>
+            <form
+              className="section-inner"
+              encType="multipart/form-data"
+              onSubmit={handleSubmit}
+            >
               <div className="input-group">
                 <label className="label" htmlFor="avatar">
                   Profile Picture
@@ -257,7 +284,7 @@ export const EditProfilePage = () => {
                   </label>
                   {/* <div class="radio-group" id="gender"> */}
                   <label htmlFor="female">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Female&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Female&nbsp;&nbsp;
                     <input
                       type="radio"
                       value="female"
@@ -268,7 +295,7 @@ export const EditProfilePage = () => {
                     />
                   </label>
                   <label htmlFor="male">
-                  &nbsp;&nbsp;&nbsp;&nbsp;Male&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;Male&nbsp;&nbsp;
                     <input
                       type="radio"
                       value="male"
@@ -280,7 +307,7 @@ export const EditProfilePage = () => {
                   </label>
 
                   <label htmlFor="private">
-                  &nbsp;&nbsp;&nbsp;&nbsp;Rather not say&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;Rather not say&nbsp;&nbsp;
                     <input
                       type="radio"
                       value="private"
@@ -363,12 +390,21 @@ export const EditProfilePage = () => {
                     onChange={handleChange}
                     className="text"
                   /> */}
-                  <select name="country"  id="country" value={userData.country} defaultValue="none" onChange={handleChange}>
-                  <option value="none" key="none"  disabled hidden>Select Country</option>
+                  <select
+                    name="country"
+                    id="country"
+                    value={userData.country}
+                    defaultValue="none"
+                    onChange={handleChange}
+                  >
+                    <option value="none" key="none" disabled hidden>
+                      Select Country
+                    </option>
                     {CountriesData.data.map((item) => (
-                        <option value={item.country} key={item.country}>{item.country}</option>
+                      <option value={item.country} key={item.country}>
+                        {item.country}
+                      </option>
                     ))}
-                   
                   </select>
                 </div>
               </div>

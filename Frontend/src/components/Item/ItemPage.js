@@ -13,14 +13,15 @@ import { addToCart } from "../../store/actions/userActions";
 import { Form } from "react-bootstrap";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_ITEM_BY_ID } from "../../GraphQL/Queries/ItemQueries";
+import { GET_SHOP } from "../../GraphQL/Queries/ShopQueries";
 
 const ItemPage = () => {
   const { state } = useLocation();
   console.log(state);
   const { loading, error, data } = useQuery(GET_ITEM_BY_ID, {
     variables: { _id: state },
-  })
-  // const [findItem, { loading, error, data }] = useLazyQuery(GET_ITEM_BY_ID);
+  });
+  const [findShop] = useLazyQuery(GET_SHOP);
 
   let navigate = useNavigate();
 
@@ -37,27 +38,39 @@ const ItemPage = () => {
 
   useEffect(() => {
     // let isSubscribed = true;
-    // const fetchItemData = async () => {
-    //   getItemData(state).then((res) => {
-    //     if (res.data.status === "ok") {
-    //       // setTimeout(() => {
-    //       setItemDetails(res.data.item[0]);
-    //       setShopDetails(res.data.item[0].SHOP);
-    //       // });
-    //     }
-    //   });
-    // };
-
+    const fetchItemData = async (data) => {
+      setItemDetails(data.findItem);
+      console.log(data);
+      let shopData = await findShop({
+        variables: {
+          _id: data.findItem.SHOP,
+        },
+      });
+      console.log(shopData.data.findShop);
+      setShopDetails(shopData.data.findShop)
+      // getItemData(state).then((res) => {
+      //   if (res.data.status === "ok") {
+      //     // setTimeout(() => {
+      //     setItemDetails(res.data.item[0]);
+      //     setShopDetails(res.data.item[0].SHOP);
+      //     // });
+      //   }
+      // });
+    };
+    fetchItemData(data);
     // if (isSubscribed) {
     //   fetchItemData().catch(console.error);
     // }
     // return () => {
     //   isSubscribed = false;
     // };
-    if(data) {
-      setItemDetails(data.findItem)
-    }
-  }, [data]);
+    // if (data) {
+    //   setItemDetails(data.findItem);
+    //   console.log(data);
+    //   let shopData = await findShop(data.findItem.SHOP)
+    //   console.log(shopData);
+    // }
+  }, [data, findShop]);
 
   let currencySymbol = null;
   if (currencyvalue === "USD") {
@@ -77,12 +90,14 @@ const ItemPage = () => {
       alert("Oops!!! We don't have that much item in stock. Try Again Later!");
     } else {
       alert("Added to Cart");
+
       let addToCartData = {
         item: itemDetails,
         quantity: itemCount,
         // hasGiftWrap: giftWrapFlag,
         // message: message,
       };
+      console.log("add to cart", addToCartData);
       dispatch(addToCart(addToCartData));
     }
   };
@@ -95,6 +110,7 @@ const ItemPage = () => {
     navigate("/shop-page", {
       state: shopDetails._id,
     });
+    // console.log(shopDetails._id); 
   };
 
   let AddToCartButton = (
