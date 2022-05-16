@@ -142,7 +142,7 @@ function ShopPage() {
         {shopItems.map((item) => (
           <ImageListItem key={item._id}>
             <img
-              src={`${backend}/images/${item.ITEM_IMAGE}`}
+              src={`https://etsy-images-bucket.s3.amazonaws.com/${item.ITEM_IMAGE}`}
               name={item._id}
               alt={item.ITEM_NAME}
               loading="lazy"

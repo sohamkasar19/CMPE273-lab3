@@ -158,7 +158,7 @@ const ItemPage = () => {
                         <img
                           src={
                             itemDetails.ITEM_IMAGE
-                              ? `${backend}/images/${itemDetails.ITEM_IMAGE}`
+                              ? `https://etsy-images-bucket.s3.amazonaws.com/${itemDetails.ITEM_IMAGE}`
                               : ""
                           }
                           name={itemDetails._id}

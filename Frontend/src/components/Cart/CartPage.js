@@ -75,7 +75,7 @@ const CartPage = () => {
             <div className="p-2">
               <img
                 style={{ height: 250 }}
-                src={`${backend}/images/${item.ITEM_IMAGE}`}
+                src={`https://etsy-images-bucket.s3.amazonaws.com/${item.ITEM_IMAGE}`}
                 alt={item.ITEM_NAME}
                 className=""
               />

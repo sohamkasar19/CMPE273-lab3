@@ -100,7 +100,7 @@ export const EditProfilePage = () => {
 
     navigate("/profile-page");
   };
-  let imgURL = `${backend}/images/${userReduxData.PROFILE_IMAGE}`;
+  let imgURL = `https://etsy-images-bucket.s3.amazonaws.com/${userReduxData.PROFILE_IMAGE}`;
   let profileImageData = (
     <img
       id="avatar_img"

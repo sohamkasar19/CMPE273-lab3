@@ -67,7 +67,7 @@ function OrderHistory() {
           let newOrderItem = {
             _id: order._id.substring(14),
             ITEM_NAME: orderItem.ORDER_ITEM.ITEM_NAME,
-            ITEM_IMAGE: `${backend}/images/${orderItem.ORDER_ITEM.ITEM_IMAGE}`,
+            ITEM_IMAGE: `https://etsy-images-bucket.s3.amazonaws.com/${orderItem.ORDER_ITEM.ITEM_IMAGE}`,
             ORDER_DATE: order.ORDER_DATE,
             BUY_PRICE: orderItem.BUY_PRICE,
             QUANTITY: orderItem.QUANTITY,
