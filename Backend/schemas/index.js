@@ -320,6 +320,41 @@ const Mutation = new GraphQLObjectType({
         return orderController.order_add(args);
       },
     },
+    editUserProfile: {
+      type: UserType,
+      args: {
+        email: {
+          type: GraphQLString,
+        },
+        name: {
+          type: GraphQLString,
+        },
+        phonenumber: {
+          type: GraphQLString,
+        },
+        gender: {
+          type: GraphQLString,
+        },
+        DOB: {
+          type: GraphQLString,
+        },
+        address: {
+          type: GraphQLString,
+        },
+        city: {
+          type: GraphQLString,
+        },
+        country: {
+          type: GraphQLString,
+        },
+        profilephoto: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parent, args) {
+        return userController.user_edit_profile_put(args);
+      },
+    }
   },
 });
 
